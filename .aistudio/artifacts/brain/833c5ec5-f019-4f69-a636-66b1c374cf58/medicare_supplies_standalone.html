@@ -1,0 +1,2249 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MediCare Supplies</title>
+    <meta name="description" content="Interactive medical supplies catalog and quotation demo with client-side admin dashboard and local persistence." />
+    <meta property="og:title" content="MediCare Supplies" />
+    <meta property="og:description" content="Interactive medical supplies catalog and quotation demo with client-side admin dashboard and local persistence." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <style>
+/* MediCare Supplies - Modern, Trustworthy Medical Palette */
+:root {
+  --navy-900: #0a192f;
+  --navy-800: #0f2942;
+  --navy-700: #1a365d;
+  --navy-600: #2a4365;
+  --teal-600: #0d9488;
+  --teal-500: #14b8a6;
+  --teal-50: #f0fdfa;
+  --teal-100: #ccfbf1;
+  --slate-50: #f8fafc;
+  --slate-100: #f1f5f9;
+  --slate-200: #e2e8f0;
+  --slate-300: #cbd5e1;
+  --slate-400: #94a3b8;
+  --slate-500: #64748b;
+  --slate-600: #475569;
+  --slate-700: #334155;
+  --slate-800: #1e293b;
+  --slate-900: #0f172a;
+  --danger: #ef4444;
+  --danger-bg: #fef2f2;
+  --success: #10b981;
+  --success-bg: #ecfdf5;
+  --warning: #f59e0b;
+  --warning-bg: #fffbeb;
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-family: var(--font-sans);
+  color: var(--slate-800);
+  background-color: #ffffff;
+  scroll-behavior: smooth;
+  line-height: 1.5;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+/* Typography & General */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--navy-900);
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Layout Container */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+  width: 100%;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+  white-space: nowrap;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.15s ease-in-out;
+}
+.btn:focus-visible {
+  outline: 2px solid var(--teal-500);
+  outline-offset: 2px;
+}
+.btn-primary {
+  background-color: var(--navy-800);
+  color: #ffffff;
+}
+.btn-primary:hover {
+  background-color: var(--navy-900);
+}
+.btn-teal {
+  background-color: var(--teal-600);
+  color: #ffffff;
+}
+.btn-teal:hover {
+  background-color: #0b7a70;
+}
+.btn-outline {
+  border-color: var(--slate-300);
+  background-color: #ffffff;
+  color: var(--slate-700);
+}
+.btn-outline:hover {
+  background-color: var(--slate-50);
+  border-color: var(--slate-400);
+}
+.btn-sm {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.8125rem;
+}
+.btn-danger {
+  background-color: var(--danger);
+  color: white;
+}
+.btn-danger:hover {
+  background-color: #dc2626;
+}
+
+/* Header */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background-color: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--slate-200);
+}
+.header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 4.25rem;
+}
+.logo-lockup {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  font-weight: 800;
+  font-size: 1.25rem;
+  color: var(--navy-900);
+}
+.logo-icon {
+  width: 2rem;
+  height: 2rem;
+  background-color: var(--navy-800);
+  color: var(--teal-500);
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.demo-tag {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 0.125rem 0.375rem;
+  background-color: var(--slate-100);
+  color: var(--slate-600);
+  border-radius: 0.25rem;
+  border: 1px solid var(--slate-200);
+}
+
+.main-nav {
+  display: flex;
+  align-items: center;
+  gap: 1.75rem;
+}
+.nav-link {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--slate-600);
+  transition: color 0.15s;
+}
+.nav-link:hover {
+  color: var(--navy-900);
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.quote-badge-btn {
+  position: relative;
+}
+.cart-counter {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background-color: var(--teal-600);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 700;
+  height: 1.25rem;
+  min-width: 1.25rem;
+  padding: 0 0.3rem;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid white;
+}
+
+.mobile-menu-btn {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--slate-700);
+  cursor: pointer;
+  padding: 0.5rem;
+}
+
+/* Demo Notice Banner */
+.demo-banner {
+  background-color: #f8fafc;
+  border-bottom: 1px solid var(--slate-200);
+  padding: 0.4rem 1rem;
+  font-size: 0.75rem;
+  color: var(--slate-600);
+  text-align: center;
+}
+
+/* Hero Section */
+.hero-section {
+  padding: 4.5rem 0 3.5rem;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  border-bottom: 1px solid var(--slate-200);
+}
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 3.5rem;
+  align-items: center;
+}
+.hero-content h1 {
+  font-size: 2.75rem;
+  line-height: 1.18;
+  letter-spacing: -0.02em;
+  margin-bottom: 1.25rem;
+  color: var(--navy-900);
+}
+.hero-content p {
+  font-size: 1.125rem;
+  color: var(--slate-600);
+  margin-bottom: 2rem;
+  max-width: 38rem;
+}
+.hero-cta {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+}
+.hero-highlights {
+  display: flex;
+  gap: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--slate-200);
+}
+.highlight-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--slate-700);
+}
+.highlight-icon {
+  color: var(--teal-600);
+}
+
+.hero-visual {
+  background-color: #ffffff;
+  border-radius: 1rem;
+  border: 1px solid var(--slate-200);
+  box-shadow: 0 10px 25px -5px rgba(15, 41, 66, 0.08);
+  padding: 1.5rem;
+}
+.hero-visual-card {
+  border-radius: 0.75rem;
+  overflow: hidden;
+  background-color: var(--slate-50);
+  border: 1px solid var(--slate-200);
+}
+.hero-visual-svg {
+  width: 100%;
+  height: 240px;
+  background: linear-gradient(135deg, #0f2942 0%, #1a365d 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Categories Section */
+.categories-section {
+  padding: 3.5rem 0;
+  background-color: #ffffff;
+}
+.section-header {
+  text-align: center;
+  max-width: 44rem;
+  margin: 0 auto 2.5rem;
+}
+.section-title {
+  font-size: 1.875rem;
+  margin-bottom: 0.75rem;
+}
+.section-subtitle {
+  font-size: 1rem;
+  color: var(--slate-600);
+}
+
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1rem;
+}
+.category-card {
+  background-color: #ffffff;
+  border: 1px solid var(--slate-200);
+  border-radius: 0.75rem;
+  padding: 1.5rem 1rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+.category-card:hover {
+  border-color: var(--teal-500);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(15, 41, 66, 0.06);
+}
+.category-card.active {
+  background-color: var(--teal-50);
+  border-color: var(--teal-600);
+}
+.category-icon {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.625rem;
+  background-color: var(--slate-100);
+  color: var(--navy-800);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+}
+.category-card:hover .category-icon,
+.category-card.active .category-icon {
+  background-color: var(--teal-600);
+  color: white;
+}
+.category-name {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--navy-900);
+}
+
+/* Catalog Section */
+.catalog-section {
+  padding: 3.5rem 0 5rem;
+  background-color: var(--slate-50);
+  border-top: 1px solid var(--slate-200);
+  border-bottom: 1px solid var(--slate-200);
+}
+.catalog-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  background: white;
+  padding: 1rem 1.25rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--slate-200);
+}
+.search-box {
+  position: relative;
+  flex: 1;
+  min-width: 260px;
+}
+.search-box input {
+  width: 100%;
+  padding: 0.625rem 1rem 0.625rem 2.5rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--slate-300);
+  background-color: #ffffff;
+  outline: none;
+}
+.search-box input:focus {
+  border-color: var(--teal-600);
+  box-shadow: 0 0 0 2px var(--teal-100);
+}
+.search-icon {
+  position: absolute;
+  left: 0.875rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--slate-400);
+  pointer-events: none;
+}
+
+.filter-group {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+.filter-select {
+  padding: 0.625rem 1.75rem 0.625rem 0.875rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--slate-300);
+  background-color: white;
+  color: var(--slate-700);
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+  gap: 1.5rem;
+}
+.product-card {
+  background-color: #ffffff;
+  border-radius: 0.75rem;
+  border: 1px solid var(--slate-200);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+.product-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--slate-300);
+  box-shadow: 0 8px 20px rgba(15, 41, 66, 0.08);
+}
+
+.product-img-box {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  background-color: #f8fafc;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid var(--slate-100);
+}
+.product-img-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.25s ease;
+}
+.product-card:hover .product-img-box img {
+  transform: scale(1.03);
+}
+.img-fallback-svg {
+  width: 64px;
+  height: 64px;
+  color: var(--slate-300);
+}
+
+.product-body {
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.product-meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--slate-500);
+}
+.product-category-text {
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--teal-600);
+}
+.product-title {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: var(--navy-900);
+  margin-bottom: 0.375rem;
+  line-height: 1.35;
+}
+.product-brand {
+  font-size: 0.8125rem;
+  color: var(--slate-500);
+  margin-bottom: 0.75rem;
+}
+.product-desc {
+  font-size: 0.8125rem;
+  color: var(--slate-600);
+  margin-bottom: 1rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.45;
+}
+
+.product-footer {
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid var(--slate-100);
+}
+.price-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+.product-price {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--navy-900);
+}
+.price-demo-hint {
+  font-size: 0.6875rem;
+  color: var(--slate-400);
+}
+.product-unit {
+  font-size: 0.75rem;
+  color: var(--slate-500);
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+}
+.status-available { color: #059669; }
+.status-out-of-stock { color: #dc2626; }
+.status-pre-order { color: #d97706; }
+
+.product-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+/* Modals & Drawers */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(10, 25, 47, 0.65);
+  backdrop-filter: blur(4px);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+.modal-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+.modal-box {
+  background-color: #ffffff;
+  border-radius: 1rem;
+  width: 100%;
+  max-width: 650px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+  transform: translateY(12px);
+  transition: transform 0.2s ease;
+}
+.modal-overlay.open .modal-box {
+  transform: translateY(0);
+}
+.modal-header {
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--slate-200);
+}
+.modal-close-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--slate-400);
+  padding: 0.25rem;
+  border-radius: 0.375rem;
+}
+.modal-close-btn:hover {
+  color: var(--slate-700);
+  background-color: var(--slate-100);
+}
+.modal-body {
+  padding: 1.5rem;
+}
+.modal-footer {
+  padding: 1.25rem 1.5rem;
+  background-color: var(--slate-50);
+  border-top: 1px solid var(--slate-200);
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+/* Quotation Drawer / Side Panel */
+.drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(10, 25, 47, 0.5);
+  backdrop-filter: blur(2px);
+  z-index: 90;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+.drawer-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+.drawer-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  max-width: 480px;
+  background-color: #ffffff;
+  box-shadow: -5px 0 25px rgba(0,0,0,0.15);
+  z-index: 95;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.drawer-overlay.open + .drawer-panel,
+.drawer-panel.open {
+  transform: translateX(0);
+}
+.drawer-header {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--slate-200);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.drawer-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.25rem 1.5rem;
+}
+.drawer-footer {
+  padding: 1.25rem 1.5rem;
+  border-top: 1px solid var(--slate-200);
+  background-color: var(--slate-50);
+}
+
+.quote-item-row {
+  display: flex;
+  gap: 1rem;
+  padding: 0.875rem 0;
+  border-bottom: 1px solid var(--slate-100);
+  align-items: center;
+}
+.quote-item-img {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 0.375rem;
+  object-fit: cover;
+  background-color: var(--slate-100);
+  border: 1px solid var(--slate-200);
+}
+.quote-item-info {
+  flex: 1;
+  min-width: 0;
+}
+.quote-item-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--navy-900);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.quote-item-unit {
+  font-size: 0.75rem;
+  color: var(--slate-500);
+}
+.qty-stepper {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--slate-300);
+  border-radius: 0.375rem;
+  overflow: hidden;
+  background: white;
+}
+.qty-btn {
+  background: none;
+  border: none;
+  width: 1.75rem;
+  height: 1.75rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--slate-700);
+}
+.qty-btn:hover {
+  background-color: var(--slate-100);
+}
+.qty-input {
+  width: 2.25rem;
+  text-align: center;
+  border: none;
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+/* Informative Sections */
+.info-section {
+  padding: 4.5rem 0;
+  background-color: #ffffff;
+}
+.info-section.alt-bg {
+  background-color: var(--slate-50);
+  border-top: 1px solid var(--slate-200);
+  border-bottom: 1px solid var(--slate-200);
+}
+
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+}
+.step-card {
+  background-color: #ffffff;
+  padding: 1.75rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--slate-200);
+  position: relative;
+}
+.step-number {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--teal-500);
+  line-height: 1;
+  margin-bottom: 0.75rem;
+  font-variant-numeric: tabular-nums;
+}
+.step-title {
+  font-size: 1.125rem;
+  margin-bottom: 0.5rem;
+}
+.step-desc {
+  font-size: 0.875rem;
+  color: var(--slate-600);
+  line-height: 1.5;
+}
+
+.about-grid, .delivery-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 3rem;
+  align-items: center;
+}
+
+.served-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+.served-item {
+  padding: 1.25rem;
+  background-color: var(--slate-50);
+  border: 1px solid var(--slate-200);
+  border-radius: 0.5rem;
+}
+.served-item h4 {
+  font-size: 0.9375rem;
+  margin-bottom: 0.25rem;
+}
+.served-item p {
+  font-size: 0.8125rem;
+  color: var(--slate-600);
+}
+
+/* FAQ Accordion */
+.faq-list {
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.faq-item {
+  background-color: #ffffff;
+  border: 1px solid var(--slate-200);
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+.faq-question {
+  width: 100%;
+  text-align: left;
+  padding: 1.125rem 1.25rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--navy-900);
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.faq-question:hover {
+  color: var(--teal-600);
+}
+.faq-answer {
+  padding: 0 1.25rem 1.125rem;
+  font-size: 0.875rem;
+  color: var(--slate-600);
+  line-height: 1.6;
+  display: none;
+}
+.faq-item.open .faq-answer {
+  display: block;
+}
+
+/* Footer */
+.site-footer {
+  background-color: var(--navy-900);
+  color: #ffffff;
+  padding: 4rem 0 2rem;
+  margin-top: auto;
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1.25fr;
+  gap: 2.5rem;
+  margin-bottom: 3rem;
+}
+.footer-col h4 {
+  color: #ffffff;
+  font-size: 0.9375rem;
+  margin-bottom: 1.25rem;
+}
+.footer-col p {
+  color: var(--slate-400);
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+.footer-links {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+.footer-links a {
+  color: var(--slate-400);
+  font-size: 0.875rem;
+  transition: color 0.15s;
+}
+.footer-links a:hover {
+  color: var(--teal-500);
+}
+.footer-bottom {
+  padding-top: 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.8125rem;
+  color: var(--slate-400);
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.admin-demo-link {
+  color: var(--teal-500);
+  text-decoration: underline;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+/* Forms */
+.form-group {
+  margin-bottom: 1rem;
+}
+.form-label {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--slate-700);
+  margin-bottom: 0.375rem;
+}
+.form-input, .form-textarea, .form-select {
+  width: 100%;
+  padding: 0.625rem 0.875rem;
+  border: 1px solid var(--slate-300);
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  background-color: #ffffff;
+  color: var(--slate-800);
+  outline: none;
+}
+.form-input:focus, .form-textarea:focus, .form-select:focus {
+  border-color: var(--teal-600);
+  box-shadow: 0 0 0 2px var(--teal-100);
+}
+.form-textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+/* Toast Notification */
+.toast-container {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  pointer-events: none;
+}
+.toast {
+  background-color: var(--navy-900);
+  color: white;
+  padding: 0.75rem 1.25rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  transform: translateY(20px);
+  opacity: 0;
+  transition: all 0.2s ease;
+  pointer-events: auto;
+}
+.toast.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* Admin Specific */
+.admin-view {
+  display: none;
+  background-color: #f8fafc;
+  min-height: 100vh;
+}
+.admin-view.active {
+  display: block;
+}
+.public-view.hidden {
+  display: none;
+}
+.admin-header {
+  background-color: var(--navy-900);
+  color: white;
+  padding: 0.875rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.admin-tabs {
+  display: flex;
+  gap: 0.5rem;
+  background-color: white;
+  border-bottom: 1px solid var(--slate-200);
+  padding: 0 1.5rem;
+  overflow-x: auto;
+}
+.admin-tab {
+  padding: 0.875rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--slate-600);
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+}
+.admin-tab:hover {
+  color: var(--navy-900);
+}
+.admin-tab.active {
+  color: var(--teal-600);
+  border-bottom-color: var(--teal-600);
+}
+.admin-content {
+  padding: 2rem 1.5rem;
+  max-width: 1300px;
+  margin: 0 auto;
+}
+.stat-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+.stat-card {
+  background: white;
+  border: 1px solid var(--slate-200);
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+}
+.stat-num {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--navy-900);
+  margin-top: 0.25rem;
+}
+.data-table-container {
+  background: white;
+  border: 1px solid var(--slate-200);
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.875rem;
+}
+.data-table th {
+  background-color: var(--slate-50);
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  color: var(--slate-700);
+  border-bottom: 1px solid var(--slate-200);
+}
+.data-table td {
+  padding: 0.875rem 1rem;
+  border-bottom: 1px solid var(--slate-100);
+  color: var(--slate-700);
+}
+.data-table tr:hover td {
+  background-color: #fcfdfe;
+}
+
+/* Responsive Media Queries */
+@media (max-width: 1024px) {
+  .hero-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+  .category-grid { grid-template-columns: repeat(3, 1fr); }
+  .steps-grid { grid-template-columns: repeat(2, 1fr); }
+  .about-grid, .delivery-grid { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+  .stat-cards-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
+  .main-nav { display: none; }
+  .mobile-menu-btn { display: block; }
+  .hero-content h1 { font-size: 2rem; }
+  .category-grid { grid-template-columns: repeat(2, 1fr); }
+  .steps-grid { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr; }
+  .product-actions { grid-template-columns: 1fr; }
+  .stat-cards-grid { grid-template-columns: 1fr; }
+  .hero-highlights { flex-direction: column; gap: 0.75rem; }
+  .modal-box { max-width: 95%; margin: 0.5rem; }
+}
+
+</style>
+  </head>
+  <body>
+    <!-- Top Demo Disclaimer Notice -->
+    <div class="demo-banner">
+      <strong>Client Preview Demonstration:</strong> All inventory, Philippine peso prices, and quotation workflows are interactive sample data stored in your local browser.
+    </div>
+
+    <!-- ================= PUBLIC WEBSITE VIEW ================= -->
+    <div id="public-website-view" class="public-view">
+      <!-- Site Header -->
+      <header class="site-header">
+        <div class="container header-row">
+          <a href="#hero" class="logo-lockup">
+            <div class="logo-icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 5v14M5 12h14"/>
+              </svg>
+            </div>
+            <span><span class="brand-name-text">MediCare Supplies</span></span>
+            <span class="demo-tag">Demo</span>
+          </a>
+
+          <nav class="main-nav" aria-label="Main Navigation">
+            <a href="#hero" class="nav-link">Home</a>
+            <a href="#about" class="nav-link">About</a>
+            <a href="#catalog-section" class="nav-link">Products</a>
+            <a href="#how-to-order" class="nav-link">How to Order</a>
+            <a href="#delivery-payment" class="nav-link">Delivery &amp; Payment</a>
+            <a href="#faqs" class="nav-link">FAQs</a>
+            <a href="#contact" class="nav-link">Contact</a>
+          </nav>
+
+          <div class="header-actions">
+            <button class="btn btn-teal quote-badge-btn open-quote-drawer-btn" aria-label="View Quotation List">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/>
+              </svg>
+              <span>Quote List</span>
+              <span class="cart-counter" style="display: none;">0</span>
+            </button>
+            <button id="mobile-menu-toggle-btn" class="mobile-menu-btn" aria-label="Toggle Navigation Menu">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="18" x2="20" y2="18"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- Mobile Navigation Drawer -->
+      <div id="mobile-nav-drawer" style="display: none; position: fixed; inset: 0; background: rgba(10,25,47,0.7); z-index: 100;">
+        <div style="background: white; width: 80%; max-width: 300px; height: 100%; padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--slate-200); padding-bottom: 0.75rem;">
+            <strong class="brand-name-text">MediCare Supplies</strong>
+            <button id="close-mobile-menu-btn" class="btn btn-outline btn-sm">✕</button>
+          </div>
+          <a href="#hero" class="nav-link" style="padding: 0.5rem 0;">Home</a>
+          <a href="#about" class="nav-link" style="padding: 0.5rem 0;">About Us</a>
+          <a href="#catalog-section" class="nav-link" style="padding: 0.5rem 0;">Products</a>
+          <a href="#how-to-order" class="nav-link" style="padding: 0.5rem 0;">How to Order</a>
+          <a href="#delivery-payment" class="nav-link" style="padding: 0.5rem 0;">Delivery &amp; Payment</a>
+          <a href="#faqs" class="nav-link" style="padding: 0.5rem 0;">FAQs</a>
+          <a href="#contact" class="nav-link" style="padding: 0.5rem 0;">Contact</a>
+          <div style="margin-top: auto; border-top: 1px solid var(--slate-200); padding-top: 1rem;">
+            <button class="btn btn-primary open-quote-drawer-btn" style="width: 100%;">View Quotation List</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hero Section -->
+      <section id="hero" class="hero-section">
+        <div class="container hero-grid">
+          <div class="hero-content">
+            <h1 id="hero-heading-text">Medical Supplies for Everyday Care.</h1>
+            <p id="hero-subheading-text">Supplying trusted medical consumables, diagnostic tools, and patient care essentials to clinics, community health centers, businesses, and households across the Philippines.</p>
+            <div class="hero-cta">
+              <a href="#catalog-section" class="btn btn-primary">Browse Products</a>
+              <button class="btn btn-teal open-quote-drawer-btn">Request a Quote</button>
+            </div>
+            <div class="hero-highlights">
+              <div class="highlight-item">
+                <span class="highlight-icon">✓</span>
+                <span>Clinical &amp; Household Grade</span>
+              </div>
+              <div class="highlight-item">
+                <span class="highlight-icon">✓</span>
+                <span>Fast Quotation Turnaround</span>
+              </div>
+              <div class="highlight-item">
+                <span class="highlight-icon">✓</span>
+                <span>Nationwide Courier Dispatch</span>
+              </div>
+            </div>
+          </div>
+          <div class="hero-visual">
+            <div class="hero-visual-card">
+              <div class="hero-visual-svg">
+                <svg width="180" height="140" viewBox="0 0 180 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <!-- Stethoscope Graphic -->
+                  <circle cx="90" cy="50" r="34" stroke="#14b8a6" stroke-width="4" stroke-dasharray="6 4"/>
+                  <path d="M70 45v14a20 20 0 0 0 40 0V45" stroke="#ffffff" stroke-width="4" stroke-linecap="round"/>
+                  <circle cx="70" cy="40" r="5" fill="#14b8a6"/>
+                  <circle cx="110" cy="40" r="5" fill="#14b8a6"/>
+                  <path d="M90 79v26a8 8 0 0 0 8 8h14" stroke="#ffffff" stroke-width="4" stroke-linecap="round"/>
+                  <circle cx="118" cy="113" r="10" fill="#0d9488" stroke="#ffffff" stroke-width="2"/>
+                </svg>
+              </div>
+              <div style="padding: 1.25rem; background: white;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                  <span style="font-size: 0.75rem; font-weight: 700; color: var(--teal-600); text-transform: uppercase;">Direct Healthcare Sourcing</span>
+                  <span style="font-size: 0.75rem; color: var(--slate-500);">Philippine Pesos (₱)</span>
+                </div>
+                <h4 style="font-size: 1rem; margin-bottom: 0.25rem;">Quality Clinical &amp; First Aid Supplies</h4>
+                <p style="font-size: 0.8125rem; color: var(--slate-600); margin: 0;">Browse items below, add required quantities, and submit for formal quotation.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Categories Section -->
+      <section class="categories-section">
+        <div class="container">
+          <div class="section-header">
+            <h2 class="section-title">Product Categories</h2>
+            <p class="section-subtitle">Select a category to filter our specialized healthcare inventory.</p>
+          </div>
+          <div class="category-grid">
+            <div class="category-card active" data-category="All">
+              <div class="category-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+              </div>
+              <span class="category-name">All Products</span>
+            </div>
+            <div class="category-card" data-category="Medical Consumables">
+              <div class="category-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m19 5-7 7-7-7"/><path d="m19 12-7 7-7-7"/></svg>
+              </div>
+              <span class="category-name">Medical Consumables</span>
+            </div>
+            <div class="category-card" data-category="Diagnostic Equipment">
+              <div class="category-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+              </div>
+              <span class="category-name">Diagnostic Equipment</span>
+            </div>
+            <div class="category-card" data-category="Patient Care">
+              <div class="category-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+              </div>
+              <span class="category-name">Patient Care</span>
+            </div>
+            <div class="category-card" data-category="Personal Protective Equipment">
+              <div class="category-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              </div>
+              <span class="category-name">Personal Protective Equipment</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Catalog Section -->
+      <section id="catalog-section" class="catalog-section">
+        <div class="container">
+          <div class="section-header" style="margin-bottom: 1.5rem;">
+            <h2 class="section-title">Medical Supplies Catalog</h2>
+            <p class="section-subtitle">Real-time availability, specifications, and sample demo pricing.</p>
+          </div>
+
+          <div class="catalog-toolbar">
+            <div class="search-box">
+              <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+              <input type="text" id="catalog-search-input" placeholder="Search by product name, brand, or specifications..." aria-label="Search catalog" />
+            </div>
+
+            <div class="filter-group">
+              <select id="catalog-category-select" class="filter-select" aria-label="Filter by Category">
+                <option value="All">All Categories</option>
+                <option value="Medical Consumables">Medical Consumables</option>
+                <option value="Diagnostic Equipment">Diagnostic Equipment</option>
+                <option value="Patient Care">Patient Care</option>
+                <option value="Personal Protective Equipment">Personal Protective Equipment</option>
+                <option value="Clinic Supplies">Clinic Supplies</option>
+              </select>
+
+              <select id="catalog-avail-select" class="filter-select" aria-label="Filter by Availability">
+                <option value="All">All Availabilities</option>
+                <option value="Available">Available Only</option>
+                <option value="Pre-order">Pre-order</option>
+                <option value="Out of Stock">Out of Stock</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Product Grid Container -->
+          <div id="products-grid-container" class="products-grid">
+            <!-- Dynamically populated via publicView.js -->
+          </div>
+        </div>
+      </section>
+
+      <!-- About Us Section -->
+      <section id="about" class="info-section">
+        <div class="container about-grid">
+          <div>
+            <span style="font-size: 0.75rem; font-weight: 700; color: var(--teal-600); text-transform: uppercase;">Who We Serve</span>
+            <h2 id="about-heading-text" style="font-size: 2rem; margin: 0.5rem 0 1rem;">Reliable Medical Supplies Partner</h2>
+            <p id="about-body-text" style="color: var(--slate-600); margin-bottom: 1.5rem; line-height: 1.6;">MediCare Supplies is a demonstration showcase designed to present how clinical facilities, small businesses, and private caregivers can explore medical inventories and request consolidated formal price quotations online.</p>
+            
+            <div class="served-grid">
+              <div class="served-item">
+                <h4>Private &amp; Community Clinics</h4>
+                <p>Routine examination disposables, diagnostic kits, and patient hygiene supplies.</p>
+              </div>
+              <div class="served-item">
+                <h4>Corporate Offices &amp; Schools</h4>
+                <p>Certified workplace first aid kits, emergency readiness, and bulk hygiene sanitation.</p>
+              </div>
+              <div class="served-item">
+                <h4>Home Care &amp; Caregivers</h4>
+                <p>Blood pressure cuffs, nebulizers, mobility crutches, and patient care comforts.</p>
+              </div>
+              <div class="served-item">
+                <h4>Diagnostic Laboratories</h4>
+                <p>Sterile collection consumables, needles, syringes, and clinical PPE.</p>
+              </div>
+            </div>
+          </div>
+          <div style="background: var(--slate-50); border: 1px solid var(--slate-200); border-radius: 1rem; padding: 2rem;">
+            <h3 style="font-size: 1.125rem; margin-bottom: 1rem; color: var(--navy-900);">Sample Business Transparency</h3>
+            <p style="font-size: 0.875rem; color: var(--slate-600); line-height: 1.6; margin-bottom: 1rem;">This website is a functioning interactive prototype. All listed pricing, brand names, and stock listings are sample demonstration assets created for client review.</p>
+            <p style="font-size: 0.875rem; color: var(--slate-600); line-height: 1.6; margin-bottom: 1.5rem;">To customize this catalog with your real company inventory, authorized distributor certifications, and trade pricing, log in to the integrated Admin Dashboard below.</p>
+            <button class="btn btn-primary btn-sm admin-demo-trigger-btn">Open Admin Demo</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- How to Order Section -->
+      <section id="how-to-order" class="info-section alt-bg">
+        <div class="container">
+          <div class="section-header">
+            <span style="font-size: 0.75rem; font-weight: 700; color: var(--teal-600); text-transform: uppercase;">Simple Process</span>
+            <h2 class="section-title">How to Request a Quotation</h2>
+            <p class="section-subtitle">Straightforward 4-step quotation workflow tailored for medical inventory procurement.</p>
+          </div>
+
+          <div class="steps-grid">
+            <div class="step-card">
+              <div class="step-number">01</div>
+              <h3 class="step-title">Browse Products</h3>
+              <p class="step-desc">Explore medical consumables, diagnostics, and PPE with technical specifications and packaging details.</p>
+            </div>
+            <div class="step-card">
+              <div class="step-number">02</div>
+              <h3 class="step-title">Submit Quote Request</h3>
+              <p class="step-desc">Add desired items to your quotation list, specify required quantities, and submit your contact details.</p>
+            </div>
+            <div class="step-card">
+              <div class="step-number">03</div>
+              <h3 class="step-title">Confirm Price &amp; Stock</h3>
+              <p class="step-desc">Our sales team reviews batch availability, applies volume discounts, and issues an official quotation.</p>
+            </div>
+            <div class="step-card">
+              <div class="step-number">04</div>
+              <h3 class="step-title">Payment &amp; Delivery</h3>
+              <p class="step-desc">Arrange convenient payment via bank transfer or check, followed by warehouse pickup or courier delivery.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Delivery & Payment Section -->
+      <section id="delivery-payment" class="info-section">
+        <div class="container delivery-grid">
+          <div>
+            <span style="font-size: 0.75rem; font-weight: 700; color: var(--teal-600); text-transform: uppercase;">Logistics &amp; Settlement</span>
+            <h2 style="font-size: 2rem; margin: 0.5rem 0 1rem;">Delivery &amp; Payment Details</h2>
+            <div style="margin-bottom: 1.5rem;">
+              <h4 style="font-size: 1rem; color: var(--navy-900); margin-bottom: 0.5rem;">Delivery &amp; Pickup Options:</h4>
+              <p id="delivery-info-text" style="color: var(--slate-600); line-height: 1.6; font-size: 0.875rem;">Sample delivery coverage: Standard nationwide courier shipping via LBC/J&amp;T and same-day on-demand transport (Grab/Lalamove) within Metro Manila and nearby provinces for rush items. Warehouse pickup is also arranged for confirmed quotation orders.</p>
+            </div>
+            <div>
+              <h4 style="font-size: 1rem; color: var(--navy-900); margin-bottom: 0.5rem;">Payment Terms:</h4>
+              <p id="payment-info-text" style="color: var(--slate-600); line-height: 1.6; font-size: 0.875rem;">Sample payment options: Bank transfer (BDO, BPI, Metrobank), GCash corporate account, or Check payment upon receipt for pre-approved institutional and clinic accounts. (Note: Demonstration setup only; no live financial checkout).</p>
+            </div>
+          </div>
+          <div style="background: var(--teal-50); border: 1px solid var(--teal-100); border-radius: 1rem; padding: 2rem;">
+            <h3 style="font-size: 1.125rem; color: var(--teal-600); margin-bottom: 0.75rem;">Sample Details Notice</h3>
+            <p style="font-size: 0.875rem; color: var(--slate-700); line-height: 1.6; margin-bottom: 1rem;">The logistics routes, freight couriers, and bank accounts presented above represent typical commercial terms and await final confirmation by your business.</p>
+            <p style="font-size: 0.8125rem; color: var(--slate-600); margin: 0;">These statements are editable anytime via the Admin Dashboard.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- FAQs Section -->
+      <section id="faqs" class="info-section alt-bg">
+        <div class="container">
+          <div class="section-header">
+            <span style="font-size: 0.75rem; font-weight: 700; color: var(--teal-600); text-transform: uppercase;">Common Questions</span>
+            <h2 class="section-title">Frequently Asked Questions</h2>
+            <p class="section-subtitle">Answers regarding orders, delivery, warranties, and bulk arrangements.</p>
+          </div>
+
+          <div id="faq-accordion-container" class="faq-list">
+            <!-- Dynamically populated via publicView.js -->
+          </div>
+        </div>
+      </section>
+
+      <!-- Contact Section -->
+      <section id="contact" class="info-section">
+        <div class="container">
+          <div class="section-header">
+            <span style="font-size: 0.75rem; font-weight: 700; color: var(--teal-600); text-transform: uppercase;">Reach Us</span>
+            <h2 class="section-title">Inquiries &amp; Customer Support</h2>
+            <p class="section-subtitle">Connect with our medical supply coordinators for inquiries.</p>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem;">
+            <div style="background: white; border: 1px solid var(--slate-200); border-radius: 0.75rem; padding: 1.5rem;">
+              <h4 style="font-size: 1rem; margin-bottom: 0.5rem; color: var(--navy-900);">Telephone &amp; Mobile</h4>
+              <p id="contact-phone-val" style="color: var(--slate-600); font-size: 0.875rem; line-height: 1.5;">+63 (02) 8123-4567 / +63 917 123 4567</p>
+              <small style="color: var(--slate-400); display: block; margin-top: 0.5rem;">(Sample contact numbers)</small>
+            </div>
+            <div style="background: white; border: 1px solid var(--slate-200); border-radius: 0.75rem; padding: 1.5rem;">
+              <h4 style="font-size: 1rem; margin-bottom: 0.5rem; color: var(--navy-900);">Email Address</h4>
+              <p id="contact-email-val" style="color: var(--slate-600); font-size: 0.875rem; line-height: 1.5;">inquiries@medicaresupplies-demo.ph</p>
+              <small style="color: var(--slate-400); display: block; margin-top: 0.5rem;">(Sample email address)</small>
+            </div>
+            <div style="background: white; border: 1px solid var(--slate-200); border-radius: 0.75rem; padding: 1.5rem;">
+              <h4 style="font-size: 1rem; margin-bottom: 0.5rem; color: var(--navy-900);">Warehouse &amp; Office</h4>
+              <p id="contact-address-val" style="color: var(--slate-600); font-size: 0.875rem; line-height: 1.5;">Unit 402 HealthCore Bldg, Medical Plaza Blvd, Pasig City, Metro Manila</p>
+              <small style="color: var(--slate-400); display: block; margin-top: 0.5rem;">(Sample address)</small>
+            </div>
+            <div style="background: white; border: 1px solid var(--slate-200); border-radius: 0.75rem; padding: 1.5rem;">
+              <h4 style="font-size: 1rem; margin-bottom: 0.5rem; color: var(--navy-900);">Operating Hours</h4>
+              <p id="contact-hours-val" style="color: var(--slate-600); font-size: 0.875rem; line-height: 1.5;">Mon – Fri: 8:00 AM – 5:30 PM | Sat: 8:30 AM – 1:00 PM (PHT)</p>
+              <small style="color: var(--slate-400); display: block; margin-top: 0.5rem;">Closed Sundays &amp; Public Holidays</small>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Footer -->
+      <footer class="site-footer">
+        <div class="container">
+          <div class="footer-grid">
+            <div class="footer-col">
+              <div class="logo-lockup" style="color: white; margin-bottom: 1rem;">
+                <div class="logo-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+                </div>
+                <span class="brand-name-text">MediCare Supplies</span>
+              </div>
+              <p>Sample interactive medical supply demonstration website. This platform illustrates catalog presentation, quotation assembly, and administration workflows.</p>
+            </div>
+            <div class="footer-col">
+              <h4>Quick Navigation</h4>
+              <ul class="footer-links">
+                <li><a href="#hero">Home</a></li>
+                <li><a href="#about">About Us</a></li>
+                <li><a href="#catalog-section">Products Catalog</a></li>
+                <li><a href="#how-to-order">How to Order</a></li>
+                <li><a href="#delivery-payment">Delivery &amp; Payment</a></li>
+              </ul>
+            </div>
+            <div class="footer-col">
+              <h4>Product Lines</h4>
+              <ul class="footer-links">
+                <li><a href="#catalog-section">Medical Consumables</a></li>
+                <li><a href="#catalog-section">Diagnostic Equipment</a></li>
+                <li><a href="#catalog-section">Personal Protective Equipment</a></li>
+                <li><a href="#catalog-section">Patient Care</a></li>
+                <li><a href="#catalog-section">Clinic Supplies</a></li>
+              </ul>
+            </div>
+            <div class="footer-col">
+              <h4>Social &amp; Inquiries</h4>
+              <p style="margin-bottom: 0.75rem;">Follow the business Facebook page:</p>
+              <a id="footer-fb-link" href="https://www.facebook.com/profile.php?id=61590781614230" target="_blank" rel="noopener noreferrer" style="color: var(--teal-500); display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 600; text-decoration: underline;">
+                <span>Visit Facebook Page</span> ↗
+              </a>
+              <small style="display: block; color: var(--slate-500); margin-top: 0.375rem; font-size: 0.75rem;">(Sample external link for demonstration purposes)</small>
+            </div>
+          </div>
+
+          <div class="footer-bottom">
+            <div>
+              &copy; 2026 <span class="brand-name-text">MediCare Supplies</span>. Demonstration website prototype.
+            </div>
+            <div>
+              <a class="admin-demo-link admin-demo-trigger-btn">Admin Demo Access</a>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <!-- ================= ADMIN DASHBOARD VIEW ================= -->
+    <div id="admin-dashboard-view" class="admin-view">
+      <header class="admin-header">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <strong style="font-size: 1.125rem;">MediCare Admin Dashboard</strong>
+          <span class="demo-tag" style="background: rgba(255,255,255,0.15); color: white; border: none;">Demo Mode</span>
+        </div>
+        <div style="display: flex; gap: 0.75rem; align-items: center;">
+          <button id="admin-view-site-btn" class="btn btn-outline btn-sm" style="background: transparent; color: white; border-color: rgba(255,255,255,0.3);">← View Website</button>
+          <button id="admin-reset-demo-btn" class="btn btn-danger btn-sm">Reset Demo Data</button>
+          <button id="admin-logout-btn" class="btn btn-outline btn-sm" style="background: white; color: var(--slate-800);">Log Out</button>
+        </div>
+      </header>
+
+      <div class="admin-tabs">
+        <button class="admin-tab active" data-tab="overview">Dashboard Overview</button>
+        <button class="admin-tab" data-tab="products">Product Catalog</button>
+        <button class="admin-tab" data-tab="quotes">Quotation Requests</button>
+        <button class="admin-tab" data-tab="content">Website Content &amp; FAQs</button>
+      </div>
+
+      <div class="admin-content">
+        <!-- 1. Overview Tab -->
+        <div id="admin-pane-overview" class="admin-tab-pane">
+          <div class="stat-cards-grid">
+            <div class="stat-card">
+              <span style="font-size: 0.8125rem; color: var(--slate-500); font-weight: 600;">Total Products</span>
+              <div id="stat-total-prods" class="stat-num tabular">0</div>
+            </div>
+            <div class="stat-card">
+              <span style="font-size: 0.8125rem; color: var(--teal-600); font-weight: 600;">Available in Stock</span>
+              <div id="stat-avail-prods" class="stat-num tabular">0</div>
+            </div>
+            <div class="stat-card">
+              <span style="font-size: 0.8125rem; color: var(--danger); font-weight: 600;">Out of Stock</span>
+              <div id="stat-out-prods" class="stat-num tabular">0</div>
+            </div>
+            <div class="stat-card">
+              <span style="font-size: 0.8125rem; color: var(--navy-900); font-weight: 600;">Total Quotation Requests</span>
+              <div id="stat-total-quotes" class="stat-num tabular">0</div>
+            </div>
+          </div>
+
+          <div style="background: white; border: 1px solid var(--slate-200); border-radius: 0.75rem; padding: 1.5rem; margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+              <h3 style="font-size: 1.125rem;">Recent Quotation Inquiries</h3>
+              <span style="font-size: 0.8125rem; color: var(--slate-500);">Real-time inquiries submitted via the public website</span>
+            </div>
+            <div class="data-table-container">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Ref #</th>
+                    <th>Customer / Company</th>
+                    <th>Items &amp; Estimate</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-recent-quotes-tbody">
+                  <!-- Populated dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Products Tab -->
+        <div id="admin-pane-products" class="admin-tab-pane" style="display: none;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 1rem;">
+            <div>
+              <h3 style="font-size: 1.25rem;">Manage Products Catalog</h3>
+              <p style="font-size: 0.8125rem; color: var(--slate-500);">Add, edit, or remove products. Changes reflect immediately on the public website.</p>
+            </div>
+            <button id="admin-add-product-btn" class="btn btn-teal">+ Add New Product</button>
+          </div>
+
+          <div class="data-table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Image</th>
+                  <th>Product Name &amp; Category</th>
+                  <th>Packaging / Unit</th>
+                  <th>Price (PHP)</th>
+                  <th>Status</th>
+                  <th style="text-align: right;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="admin-products-tbody">
+                <!-- Populated dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 3. Quotes Tab -->
+        <div id="admin-pane-quotes" class="admin-tab-pane" style="display: none;">
+          <div style="margin-bottom: 1.25rem;">
+            <h3 style="font-size: 1.25rem;">Quotation Requests</h3>
+            <p style="font-size: 0.8125rem; color: var(--slate-500);">Review submitted quotation leads, update status flags, and record internal office pricing logs.</p>
+          </div>
+
+          <div class="data-table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Reference</th>
+                  <th>Customer</th>
+                  <th>Contact</th>
+                  <th>Items</th>
+                  <th>Submitted</th>
+                  <th>Status</th>
+                  <th style="text-align: right;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="admin-quotes-tbody">
+                <!-- Populated dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 4. Content Tab -->
+        <div id="admin-pane-content" class="admin-tab-pane" style="display: none;">
+          <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 2rem;">
+            <div>
+              <div style="background: white; border: 1px solid var(--slate-200); border-radius: 0.75rem; padding: 1.5rem; margin-bottom: 1.5rem;">
+                <h3 style="font-size: 1.125rem; margin-bottom: 1rem; border-bottom: 1px solid var(--slate-200); padding-bottom: 0.5rem;">Website Branding &amp; Text Content</h3>
+                <form id="admin-content-form">
+                  <div class="form-group">
+                    <label class="form-label">Business Name:</label>
+                    <input type="text" id="content-form-biz-name" class="form-input" required />
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Hero Title:</label>
+                    <input type="text" id="content-form-hero-title" class="form-input" required />
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Hero Subheading:</label>
+                    <textarea id="content-form-hero-sub" class="form-textarea" rows="2"></textarea>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">About Us Headline:</label>
+                    <input type="text" id="content-form-about-head" class="form-input" />
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">About Us Description:</label>
+                    <textarea id="content-form-about-body" class="form-textarea" rows="3"></textarea>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Delivery Options Description:</label>
+                    <textarea id="content-form-delivery" class="form-textarea" rows="2"></textarea>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Payment Methods Description:</label>
+                    <textarea id="content-form-payment" class="form-textarea" rows="2"></textarea>
+                  </div>
+
+                  <h4 style="font-size: 0.9375rem; margin: 1.25rem 0 0.75rem; color: var(--navy-900);">Contact Details</h4>
+                  <div class="form-group">
+                    <label class="form-label">Phone Numbers:</label>
+                    <input type="text" id="content-form-phone" class="form-input" />
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Email Address:</label>
+                    <input type="email" id="content-form-email" class="form-input" />
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Physical Address:</label>
+                    <input type="text" id="content-form-addr" class="form-input" />
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Operating Hours:</label>
+                    <input type="text" id="content-form-hours" class="form-input" />
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Facebook Profile Link:</label>
+                    <input type="url" id="content-form-fb" class="form-input" />
+                  </div>
+
+                  <button type="submit" class="btn btn-teal" style="width: 100%;">Save Website Content Changes</button>
+                </form>
+              </div>
+            </div>
+
+            <div>
+              <div style="background: white; border: 1px solid var(--slate-200); border-radius: 0.75rem; padding: 1.5rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid var(--slate-200); padding-bottom: 0.5rem;">
+                  <h3 style="font-size: 1.125rem;">Frequently Asked Questions</h3>
+                  <button id="admin-add-faq-btn" class="btn btn-outline btn-sm">+ Add FAQ</button>
+                </div>
+                <div id="admin-faqs-list">
+                  <!-- Populated dynamically -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= MODALS & DRAWERS ================= -->
+
+    <!-- Quotation Drawer -->
+    <div id="quote-drawer-overlay" class="drawer-overlay"></div>
+    <div id="quote-drawer-panel" class="drawer-panel">
+      <div class="drawer-header">
+        <div>
+          <h3 style="font-size: 1.125rem;">Quotation Request List</h3>
+          <small style="color: var(--slate-500);"><span id="drawer-total-count" class="tabular">0</span> items selected</small>
+        </div>
+        <button id="close-drawer-btn" class="modal-close-btn" aria-label="Close Drawer">✕</button>
+      </div>
+      <div id="drawer-items-list" class="drawer-content">
+        <!-- Dynamically rendered items -->
+      </div>
+      <div id="drawer-empty-state" style="padding: 3rem 1.5rem; text-align: center;">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color: var(--slate-300); margin: 0 auto 1rem;"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>
+        <p style="font-weight: 600; color: var(--navy-900); margin-bottom: 0.25rem;">Your quotation list is empty</p>
+        <p style="font-size: 0.8125rem; color: var(--slate-500); margin-bottom: 1.25rem;">Browse our catalog and add items you would like priced.</p>
+        <a href="#catalog-section" class="btn btn-outline btn-sm" onclick="document.getElementById('quote-drawer-panel').classList.remove('open'); document.getElementById('quote-drawer-overlay').classList.remove('open');">Browse Products</a>
+      </div>
+      <div id="drawer-footer-actions" class="drawer-footer" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 1rem;">
+          <span style="font-size: 0.875rem; color: var(--slate-600);">Estimated Total:</span>
+          <span id="drawer-est-total" style="font-size: 1.25rem; font-weight: 800; color: var(--navy-900);" class="tabular">₱0.00</span>
+        </div>
+        <button id="proceed-to-quote-form-btn" class="btn btn-teal" style="width: 100%;">Proceed to Quotation Form</button>
+      </div>
+    </div>
+
+    <!-- Product Details Modal -->
+    <div id="product-details-modal" class="modal-overlay">
+      <div class="modal-box" style="max-width: 720px;">
+        <div class="modal-header">
+          <h3 style="font-size: 1.125rem;">Product Details</h3>
+          <button id="close-product-modal-btn" class="modal-close-btn">✕</button>
+        </div>
+        <div id="product-modal-body" class="modal-body">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Quotation Checkout / Contact Form Modal -->
+    <div id="quote-checkout-modal" class="modal-overlay">
+      <div class="modal-box">
+        <div class="modal-header">
+          <div>
+            <h3 style="font-size: 1.125rem;">Submit Quotation Request</h3>
+            <small style="color: var(--slate-500);">Provide contact information to receive your formal price quote</small>
+          </div>
+          <button id="close-checkout-modal-btn" class="modal-close-btn">✕</button>
+        </div>
+        <form id="quotation-request-form">
+          <div class="modal-body">
+            <div style="background-color: var(--teal-50); border: 1px solid var(--teal-100); border-radius: 0.5rem; padding: 0.75rem; margin-bottom: 1.25rem; font-size: 0.8125rem; color: var(--teal-900);">
+              <strong>Quotation Workflow:</strong> This does not initiate an immediate charge or checkout. Our sales coordinators will prepare an itemized commercial quote.
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Full Name *</label>
+              <input type="text" id="quote-cust-name" class="form-input" placeholder="e.g. Dr. Maria Elena Santos" required />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Company / Clinic / Facility Name (Optional)</label>
+              <input type="text" id="quote-cust-company" class="form-input" placeholder="e.g. Santos Family Wellness Clinic" />
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+              <div class="form-group">
+                <label class="form-label">Email Address *</label>
+                <input type="email" id="quote-cust-email" class="form-input" placeholder="name@clinic.ph" required />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Contact Phone / Mobile *</label>
+                <input type="tel" id="quote-cust-phone" class="form-input" placeholder="0917-xxx-xxxx" required />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Delivery Destination / Clinic Address *</label>
+              <input type="text" id="quote-cust-address" class="form-input" placeholder="Street Address, City, Province" required />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Special Notes / Specifications (Optional)</label>
+              <textarea id="quote-cust-notes" class="form-textarea" placeholder="e.g. Specific brand preferences, delivery deadlines, lot certificate requests..."></textarea>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline" onclick="document.getElementById('quote-checkout-modal').classList.remove('open')">Cancel</button>
+            <button type="submit" class="btn btn-teal">Submit Quotation Request</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Quotation Confirmation Modal -->
+    <div id="quote-confirm-modal" class="modal-overlay">
+      <div class="modal-box" style="max-width: 500px; text-align: center;">
+        <div class="modal-body" style="padding: 2.5rem 1.75rem;">
+          <div style="width: 3.5rem; height: 3.5rem; background-color: var(--teal-50); color: var(--teal-600); border-radius: 9999px; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem;">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <h3 style="font-size: 1.5rem; margin-bottom: 0.5rem; color: var(--navy-900);">Quotation Request Recorded</h3>
+          <p style="font-size: 0.875rem; color: var(--slate-600); margin-bottom: 1.25rem;">Your reference tracking number is:</p>
+          
+          <div style="background-color: var(--slate-100); border: 1px dashed var(--slate-300); border-radius: 0.5rem; padding: 0.75rem; font-size: 1.25rem; font-weight: 800; color: var(--navy-900); letter-spacing: 0.05em; margin-bottom: 1.5rem;" class="tabular" id="confirm-ref-number">
+            QT-2026-XXXX
+          </div>
+
+          <div id="confirm-details-box" style="text-align: left; background: var(--slate-50); border: 1px solid var(--slate-200); border-radius: 0.5rem; padding: 1rem; font-size: 0.8125rem; color: var(--slate-600); margin-bottom: 1.5rem;">
+            <!-- Rendered dynamically -->
+          </div>
+
+          <div style="background-color: #fffbeb; border: 1px solid #fef3c7; border-radius: 0.5rem; padding: 0.75rem; font-size: 0.8125rem; color: #92400e; margin-bottom: 1.5rem;">
+            <strong>Demo only.</strong> This request has not been sent to the business. It is stored locally in your browser and visible in the Admin Dashboard for evaluation.
+          </div>
+
+          <button id="close-confirm-modal-btn" class="btn btn-primary" style="width: 100%;">Return to Catalog</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Admin Simulated Login Modal -->
+    <div id="admin-login-modal" class="modal-overlay">
+      <div class="modal-box" style="max-width: 440px;">
+        <div class="modal-header">
+          <h3 style="font-size: 1.125rem;">Admin Demo Access</h3>
+          <button id="close-login-modal-btn" class="modal-close-btn">✕</button>
+        </div>
+        <form id="admin-login-form">
+          <div class="modal-body">
+            <div style="background-color: var(--slate-100); border: 1px solid var(--slate-200); border-radius: 0.5rem; padding: 0.875rem; margin-bottom: 1.25rem; font-size: 0.8125rem; color: var(--slate-700);">
+              <strong>Preview Credentials:</strong><br>
+              Email: <code style="background: white; padding: 2px 4px; border-radius: 3px;">admin@demo.com</code><br>
+              Password: <code style="background: white; padding: 2px 4px; border-radius: 3px;">Admin123!</code>
+              <div style="margin-top: 0.5rem;">
+                <button type="button" id="autofill-login-btn" class="btn btn-outline btn-sm" style="font-size: 0.75rem; padding: 0.2rem 0.5rem;">Autofill Credentials</button>
+              </div>
+            </div>
+
+            <div id="login-error-msg" style="display: none; background: #fee2e2; color: #b91c1c; padding: 0.5rem; border-radius: 0.375rem; font-size: 0.8125rem; margin-bottom: 1rem;"></div>
+
+            <div class="form-group">
+              <label class="form-label">Email</label>
+              <input type="email" id="admin-email-input" class="form-input" required />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Password</label>
+              <input type="password" id="admin-pass-input" class="form-input" required />
+            </div>
+
+            <p style="font-size: 0.75rem; color: var(--slate-500); line-height: 1.4;">
+              * Note: This is a simulated client-side login for evaluation, not a secure production auth server.
+            </p>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-teal" style="width: 100%;">Log In to Admin Demo</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Admin Product Add / Edit Modal -->
+    <div id="admin-product-modal" class="modal-overlay">
+      <div class="modal-box" style="max-width: 650px;">
+        <div class="modal-header">
+          <h3 id="admin-product-modal-title" style="font-size: 1.125rem;">Product Details</h3>
+          <button id="close-admin-prod-modal-btn" class="modal-close-btn">✕</button>
+        </div>
+        <form id="admin-product-form">
+          <div class="modal-body">
+            <input type="hidden" id="prod-form-id" />
+
+            <div class="form-group">
+              <label class="form-label">Product Name *</label>
+              <input type="text" id="prod-form-name" class="form-input" required />
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+              <div class="form-group">
+                <label class="form-label">Category *</label>
+                <select id="prod-form-category" class="form-select" required>
+                  <option value="Medical Consumables">Medical Consumables</option>
+                  <option value="Diagnostic Equipment">Diagnostic Equipment</option>
+                  <option value="Patient Care">Patient Care</option>
+                  <option value="Personal Protective Equipment">Personal Protective Equipment</option>
+                  <option value="Clinic Supplies">Clinic Supplies</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Brand *</label>
+                <input type="text" id="prod-form-brand" class="form-input" required />
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+              <div class="form-group">
+                <label class="form-label">Packaging / Unit *</label>
+                <input type="text" id="prod-form-packaging" class="form-input" placeholder="e.g. Box of 100 pcs" required />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Price in PHP (₱)</label>
+                <input type="number" step="0.01" id="prod-form-price" class="form-input" placeholder="Leave empty for Request Price" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Availability *</label>
+                <select id="prod-form-availability" class="form-select">
+                  <option value="Available">Available</option>
+                  <option value="Pre-order">Pre-order</option>
+                  <option value="Out of Stock">Out of Stock</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Description</label>
+              <textarea id="prod-form-desc" class="form-textarea" rows="2"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Technical Specifications</label>
+              <textarea id="prod-form-specs" class="form-textarea" rows="2" placeholder="Dimensions, standard certifications, materials..."></textarea>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Product Image (File Upload or Image URL)</label>
+              <div style="display: flex; gap: 1rem; align-items: center;">
+                <img id="prod-form-preview-img" src="" alt="Preview" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px; border: 1px solid var(--slate-300);" />
+                <div style="flex: 1;">
+                  <input type="file" id="prod-form-image-file" accept="image/*" style="font-size: 0.8125rem; margin-bottom: 0.375rem;" />
+                  <input type="url" id="prod-form-image-url" class="form-input" placeholder="Or enter public image URL..." />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline" onclick="document.getElementById('admin-product-modal').classList.remove('open')">Cancel</button>
+            <button type="submit" class="btn btn-teal">Save Product</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Admin Quotation Inspection Modal -->
+    <div id="admin-quote-detail-modal" class="modal-overlay">
+      <div class="modal-box" style="max-width: 700px;">
+        <div class="modal-header">
+          <h3 style="font-size: 1.125rem;">Quotation Request Record</h3>
+          <button id="close-admin-quote-modal-btn" class="modal-close-btn">✕</button>
+        </div>
+        <div id="admin-quote-detail-body" class="modal-body">
+          <!-- Populated dynamically -->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="document.getElementById('admin-quote-detail-modal').classList.remove('open')">Close</button>
+          <button type="button" id="admin-save-quote-changes-btn" class="btn btn-teal">Save Status &amp; Notes</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Admin FAQ Add / Edit Modal -->
+    <div id="admin-faq-modal" class="modal-overlay">
+      <div class="modal-box" style="max-width: 500px;">
+        <div class="modal-header">
+          <h3 id="admin-faq-modal-title" style="font-size: 1.125rem;">FAQ Entry</h3>
+          <button id="close-admin-faq-modal-btn" class="modal-close-btn">✕</button>
+        </div>
+        <form id="admin-faq-form">
+          <div class="modal-body">
+            <input type="hidden" id="faq-form-id" />
+            <div class="form-group">
+              <label class="form-label">Question *</label>
+              <input type="text" id="faq-form-question" class="form-input" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Answer *</label>
+              <textarea id="faq-form-answer" class="form-textarea" rows="3" required></textarea>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline" onclick="document.getElementById('admin-faq-modal').classList.remove('open')">Cancel</button>
+            <button type="submit" class="btn btn-teal">Save FAQ</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- JavaScript Module Entry -->
+    <script>
+(function(){let e=document.createElement(`link`).relList;if(e&&e.supports&&e.supports(`modulepreload`))return;for(let e of document.querySelectorAll(`link[rel="modulepreload"]`))n(e);new MutationObserver(e=>{for(let t of e)if(t.type===`childList`)for(let e of t.addedNodes)e.tagName===`LINK`&&e.rel===`modulepreload`&&n(e)}).observe(document,{childList:!0,subtree:!0});function t(e){let t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),t.credentials=e.crossOrigin===`use-credentials`?`include`:e.crossOrigin===`anonymous`?`omit`:`same-origin`,t}function n(e){if(e.ep)return;e.ep=!0;let n=t(e);fetch(e.href,n)}})();function e(e,t){let n=`<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">
+    <rect width="400" height="300" fill="#f8fafc"/>
+    <rect x="20" y="20" width="360" height="260" rx="16" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+    <circle cx="200" cy="140" r="70" fill="${e}" opacity="0.12"/>
+    <g transform="translate(160, 100)" stroke="${e}" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      ${t}
+    </g>
+    <text x="200" y="245" font-family="system-ui, sans-serif" font-size="14" font-weight="600" fill="#64748b" text-anchor="middle">Standard Medical Grade</text>
+  </svg>`;return`data:image/svg+xml;utf8,${encodeURIComponent(n)}`}var t=[{id:`med-01`,name:`Nitrile Examination Gloves (Powder-Free)`,category:`Personal Protective Equipment`,brand:`MediShield Pro`,description:`High tensile strength medical examination gloves offering tactile sensitivity and reliable chemical splash resistance. Latex-free and non-sterile.`,specs:`Material: 100% Synthetic Nitrile; Color: Cobalt Blue; Thickness: 4.0 mil; Standard: ASTM D6319, EN 455; Powder-free.`,packaging:`Box of 100 pcs (50 pairs)`,price:360,priceDisplay:`₱360.00`,availability:`Available`,image:e(`#0f2942`,`<path d="M18 11V6a2 2 0 0 1 4 0v7a2 2 0 0 1 4 0v-4a2 2 0 0 1 4 0v6a2 2 0 0 1 4 0v3a9 9 0 0 1-18 0v-4"/><path d="M6 18a6 6 0 0 1 6-6h2"/>`)},{id:`med-02`,name:`Surgical Face Masks 3-Ply (BFE ≥ 98%)`,category:`Personal Protective Equipment`,brand:`SafeBreathe Medical`,description:`Fluid-resistant disposable face masks equipped with ultrasonically welded ear loops and adjustable aluminum nose bridge for a secure seal.`,specs:`Filtration: BFE ≥ 98%, PFE ≥ 98%; Layers: Polypropylene spunbond outer/inner, meltblown middle filter; Hypoallergenic.`,packaging:`Box of 50 pcs`,price:135,priceDisplay:`₱135.00`,availability:`Available`,image:e(`#0d9488`,`<rect x="6" y="10" width="68" height="44" rx="6"/><line x1="6" y1="24" x2="74" y2="24"/><line x1="6" y1="38" x2="74" y2="38"/><path d="M6 16C-6 24 -6 40 6 48"/><path d="M74 16C86 24 86 40 74 48"/>`)},{id:`med-03`,name:`Sterile Absorbent Gauze Pads (4" x 4")`,category:`Medical Consumables`,brand:`CuraWound`,description:`USP Type VII 100% woven cotton gauze sponges individually sealed for clean wound dressing, debridement, and exudate absorption.`,specs:`Dimensions: 4 in x 4 in (10cm x 10cm); Ply: 12-ply; Sterilization: Ethylene Oxide (EO); Lint-free woven edges.`,packaging:`Box of 100 individually wrapped packets`,price:240,priceDisplay:`₱240.00`,availability:`Available`,image:e(`#1a365d`,`<rect x="12" y="12" width="56" height="56" rx="4"/><line x1="24" y1="12" x2="24" y2="68"/><line x1="40" y1="12" x2="40" y2="68"/><line x1="56" y1="12" x2="56" y2="68"/><line x1="12" y1="28" x2="68" y2="28"/><line x1="12" y1="44" x2="68" y2="44"/><line x1="12" y1="60" x2="68" y2="60"/>`)},{id:`med-04`,name:`Disposable Syringes with Luer Lock Needle (3mL)`,category:`Medical Consumables`,brand:`PrecisionInject`,description:`Ultra-clear polypropylene barrel with clearly defined graduation scale markings and secure luer lock tip preventing accidental needle detachment.`,specs:`Volume: 3 mL; Needle: 23G x 1 inch detachable; Piston: Latex-free medical synthetic rubber; Pyrogen-free.`,packaging:`Box of 100 pcs blister packs`,price:480,priceDisplay:`₱480.00`,availability:`Available`,image:e(`#08837e`,`<path d="m32 20 28 28"/><path d="m42 10 28 28"/><line x1="56" y1="24" x2="68" y2="12"/><line x1="64" y1="8" x2="72" y2="16"/><line x1="28" y1="36" x2="16" y2="48"/><line x1="10" y1="54" x2="18" y2="46"/><line x1="14" y1="50" x2="6" y2="58"/>`)},{id:`med-05`,name:`Digital Infrared Forehead Thermometer`,category:`Diagnostic Equipment`,brand:`ThermoScan Medical`,description:`Non-contact clinical grade thermometer with instant 1-second infrared sensor, color-coded fever warning screen, and 32-reading memory recall.`,specs:`Measurement range: 32.0°C - 42.9°C (89.6°F - 109.2°F); Accuracy: ±0.2°C; Distance: 1-5 cm; Power: 2x AAA batteries.`,packaging:`1 Unit per Retail Box with Battery & Manual`,price:950,priceDisplay:`₱950.00`,availability:`Available`,image:e(`#0f2942`,`<path d="M28 62V22a10 10 0 0 1 20 0v40a16 16 0 1 1-20 0z"/><circle cx="38" cy="62" r="8"/><line x1="38" y1="26" x2="38" y2="54"/>`)},{id:`med-06`,name:`Automatic Upper Arm Blood Pressure Monitor`,category:`Diagnostic Equipment`,brand:`CardioCheck Pro`,description:`Fully automatic digital sphygmomanometer featuring IntelliSense cuff inflation, irregular heartbeat detection, and 2-user 99-reading memory.`,specs:`Pressure Range: 0 to 299 mmHg; Pulse: 40 to 180 beats/min; Cuff Size: Standard 22–42 cm wide-range; Power: AC Adapter or 4x AA.`,packaging:`1 Complete Kit (Monitor, Wide Cuff, Case, Adapter)`,price:1850,priceDisplay:`₱1,850.00`,availability:`Available`,image:e(`#14b8a6`,`<rect x="10" y="16" width="60" height="48" rx="8"/><circle cx="40" cy="40" r="16"/><path d="M40 28v12l8 4"/>`)},{id:`med-07`,name:`Fingertip Pulse Oximeter (Dual Color OLED)`,category:`Diagnostic Equipment`,brand:`OxySense Clinique`,description:`Portable non-invasive blood oxygen saturation and pulse rate monitor with multi-directional display, plethysmograph waveform, and auto-shutoff.`,specs:`SpO2 Range: 70%–100% (±2%); Pulse Range: 30–250 bpm; Battery: 2x AAA (up to 30 continuous hours); Auto-off in 8s.`,packaging:`1 Unit with Lanyard and Pouch`,price:680,priceDisplay:`₱680.00`,availability:`Available`,image:e(`#1a365d`,`<rect x="16" y="14" width="48" height="52" rx="10"/><circle cx="40" cy="36" r="10"/><path d="M24 54h32"/>`)},{id:`med-08`,name:`Standard Folding Wheelchair (Chrome Plated Steel)`,category:`Patient Care`,brand:`MobilityCare Plus`,description:`Heavy-duty folding patient wheelchair engineered with reinforced cross-braces, wipeable vinyl upholstery, padded armrests, and swing-away footrests.`,specs:`Weight capacity: 110 kg (242 lbs); Seat Width: 18 inches; Rear Wheels: 24" solid rubber; Front casters: 8" PVC; Total weight: 17.5 kg.`,packaging:`1 Fully Assembled Folded Unit`,price:4950,priceDisplay:`₱4,950.00`,availability:`Available`,image:e(`#0f2942`,`<circle cx="36" cy="52" r="16"/><circle cx="36" cy="52" r="6"/><path d="M36 36V18h16l10 24h12"/><circle cx="68" cy="14" r="5"/><circle cx="68" cy="62" r="6"/>`)},{id:`med-09`,name:`Workplace & Emergency First Aid Kit (65-Piece)`,category:`Clinic Supplies`,brand:`RescueLine Safety`,description:`Comprehensive medical response kit stocked in a water-resistant wall-mountable hard case, organized for quick access during clinic or workplace injuries.`,specs:`Includes: Antiseptic wipes, triangular bandages, conforming rolls, sterile pads, tweezers, trauma shears, adhesive strips, CPR shield, tourniquet.`,packaging:`1 Wall-Mountable Hard Case Box`,price:1250,priceDisplay:`₱1,250.00`,availability:`Available`,image:e(`#0d9488`,`<rect x="12" y="20" width="56" height="46" rx="6"/><path d="M30 20V12a4 4 0 0 1 4-4h12a4 4 0 0 1 4 4v8"/><line x1="40" y1="31" x2="40" y2="55"/><line x1="28" y1="43" x2="52" y2="43"/>`)},{id:`med-10`,name:`Isopropyl Alcohol 70% Antiseptic (1 Gallon / 3.785L)`,category:`Medical Consumables`,brand:`SaniClean Pharma`,description:`Hospital-grade antiseptic and antibacterial topical solution formulated for clinic surface sanitization, hand disinfection, and general sterilizing.`,specs:`Active: 70% Isopropanol USP; Form: Clear Liquid; Volume: 1 US Gallon (3,785 mL); Scent: Clean clinical; Safety capped.`,packaging:`1 Gallon Bottle (4 bottles per master carton)`,price:395,priceDisplay:`₱395.00`,availability:`Available`,image:e(`#1a365d`,`<rect x="22" y="24" width="36" height="48" rx="4"/><path d="M34 24V12h12v12"/><path d="M30 12h20"/>`)},{id:`med-11`,name:`Compressor Nebulizer Therapy System`,category:`Diagnostic Equipment`,brand:`RespiraCare Ultra`,description:`Durable piston-compressor medication nebulizer delivering consistent aerosol medication for asthma, bronchitis, and respiratory treatments.`,specs:`MMAD: ~3.0 µm; Nebulization Rate: ≥ 0.25 mL/min; Sound: < 60 dB; Includes adult mask, pediatric mask, angled mouthpiece, tubing, 5 filters.`,packaging:`1 Complete Clinical Machine System`,price:1450,priceDisplay:`₱1,450.00`,availability:`Available`,image:e(`#08837e`,`<rect x="14" y="20" width="52" height="42" rx="6"/><circle cx="34" cy="41" r="8"/><path d="M50 32v18"/><path d="M56 37h6c4 0 8 4 8 8v8"/>`)},{id:`med-12`,name:`Disposable Non-Woven Bed Sheet Roll (50m x 60cm)`,category:`Clinic Supplies`,brand:`MediCover Pro`,description:`Waterproof and grease-resistant spunbond polypropylene exam table paper roll with pre-perforated tear lines for hygienic clinic patient turnover.`,specs:`Dimensions: 60 cm width x 50 meters length; Perforation: Every 40 cm; Grammage: 25 gsm; Embossed texture.`,packaging:`1 Continuous Roll in protective shrinkwrap`,price:520,priceDisplay:`₱520.00`,availability:`Available`,image:e(`#0f2942`,`<ellipse cx="26" cy="40" rx="12" ry="24"/><path d="M26 16h40c6.6 0 12 10.7 12 24s-5.4 24-12 24H26"/>`)},{id:`med-13`,name:`Dual-Head Stainless Steel Clinical Stethoscope`,category:`Diagnostic Equipment`,brand:`AcuSound Cardiology`,description:`Acoustically superior stainless steel chestpiece with tunable diaphragm and deep bell for high and low frequency auscultation of heart and lung sounds.`,specs:`Chestpiece: Machined stainless steel; Tubing: Dual-lumen latex-free; Ear tips: Soft sealing silicone; Length: 27 inches.`,packaging:`1 Boxed Instrument with spare ear tips & diaphragm`,price:1650,priceDisplay:`₱1,650.00`,availability:`Available`,image:e(`#14b8a6`,`<path d="M20 18v16c0 10 8 18 18 18h4c10 0 18-8 18-18V18"/><circle cx="20" cy="14" r="4"/><circle cx="60" cy="14" r="4"/><path d="M40 52v12a8 8 0 0 0 8 8h10"/><circle cx="66" cy="72" r="8"/>`)},{id:`med-14`,name:`Adjustable Aluminum Underarm Crutches (Pair)`,category:`Patient Care`,brand:`MobilityCare Plus`,description:`Lightweight anodized aluminum crutches with dual push-button height adjustments for underarm pad and hand grip. Heavy duty non-skid rubber tips.`,specs:`Patient Height: Medium (5'2" to 5'10"); Adjustment: 9-step height, 4-step handgrip; Weight capacity: 136 kg (300 lbs).`,packaging:`1 Pair (Left and Right)`,price:880,priceDisplay:`₱880.00`,availability:`Pre-order`,image:e(`#0d9488`,`<line x1="24" y1="12" x2="56" y2="12"/><line x1="28" y1="12" x2="38" y2="72"/><line x1="52" y1="12" x2="42" y2="72"/><line x1="30" y1="36" x2="50" y2="36"/><rect x="36" y="70" width="8" height="6" rx="2"/>`)}],n={businessName:`MediCare Supplies`,brandSubtitle:`Medical Supplies Demo`,heroHeading:`Medical Supplies for Everyday Care.`,heroSubheading:`Supplying trusted medical consumables, diagnostic tools, and patient care essentials to clinics, community health centers, businesses, and households across the Philippines.`,aboutHeading:`Reliable Medical Supplies Partner`,aboutText:`MediCare Supplies is a demonstration showcase designed to present how clinical facilities, small businesses, and private caregivers can explore medical inventories and request consolidated formal price quotations online. We prioritize transparent product specifications, reliable stock availability tracking, and straightforward order fulfillment coordination.`,deliveryText:`Sample delivery coverage: Standard nationwide courier shipping via LBC/J&T and same-day on-demand transport (Grab/Lalamove) within Metro Manila and nearby provinces for rush items. Warehouse pickup is also arranged for confirmed quotation orders.`,paymentText:`Sample payment options: Bank transfer (BDO, BPI, Metrobank), GCash corporate account, or Check payment upon receipt for pre-approved institutional and clinic accounts. (Note: Demonstration setup only; no live financial checkout).`,contactPhone:`+63 (02) 8123-4567 / +63 917 123 4567`,contactEmail:`inquiries@medicaresupplies-demo.ph`,contactAddress:`Unit 402 HealthCore Bldg, Medical Plaza Blvd, Pasig City, Metro Manila, Philippines`,operatingHours:`Monday – Friday: 8:00 AM – 5:30 PM | Saturday: 8:30 AM – 1:00 PM (PHT)`,facebookUrl:`https://www.facebook.com/profile.php?id=61590781614230`},r=[{id:`faq-1`,question:`How do bulk orders and institutional pricing work?`,answer:`For healthcare centers, clinics, schools, and corporate purchasing, we provide volume tiered pricing. Simply add your desired items and estimated quantities into the Quotation Request builder. Our team reviews stock availability and replies with a formal price quote.`},{id:`faq-2`,question:`How is product availability verified?`,answer:`Items marked 'Available' are stocked in our standard replenishment cycle. Items labeled 'Pre-order' generally take 5 to 10 business days for specialized dispatch. Once you submit a quote, we confirm current batch lot numbers and delivery schedules.`},{id:`faq-3`,question:`What are the delivery and pickup arrangements?`,answer:`Orders can be dispatched via accredited freight forwarders nationwide or same-day logistics within Metro Manila. Pre-arranged warehouse pickup is also supported upon issuance of a formal quotation confirmation.`},{id:`faq-4`,question:`What is your warranty and returns policy for medical equipment?`,answer:`Diagnostic instruments (such as digital monitors, nebulizers, and pulse oximeters) include a standard 1-year manufacturer service warranty against factory defects. Medical consumables cannot be returned once individual sterile blister seals are broken.`}],i=[{id:`qt-001`,refNumber:`QT-2026-1042`,customerName:`Dr. Maria Elena Santos`,companyName:`Santos Family Wellness Clinic`,email:`dr.santos@wellnessclinic.ph`,phone:`0918-555-0192`,deliveryAddress:`Room 304, San Juan Medical Tower, San Juan City`,notes:`Please confirm batch expiry dates for Nitrile gloves and 3-ply masks. Requesting delivery by Friday.`,items:[{id:`med-01`,name:`Nitrile Examination Gloves (Powder-Free)`,unitPrice:360,quantity:5,packaging:`Box of 100 pcs`},{id:`med-02`,name:`Surgical Face Masks 3-Ply (BFE ≥ 98%)`,unitPrice:135,quantity:10,packaging:`Box of 50 pcs`},{id:`med-06`,name:`Automatic Upper Arm Blood Pressure Monitor`,unitPrice:1850,quantity:2,packaging:`1 Complete Kit`}],status:`New`,internalNotes:`Stock reserved in warehouse. Awaiting customer confirmation on shipping courier.`,createdAt:`2026-10-05T09:30:00.000Z`},{id:`qt-002`,refNumber:`QT-2026-1043`,customerName:`Arnel Bautista`,companyName:`Horizon Logistics Office Care`,email:`safety@horizonlogistics.ph`,phone:`0920-888-4321`,deliveryAddress:`Warehouse 12, C5 Road, Taguig City`,notes:`Restocking our first aid cabinets for annual safety compliance.`,items:[{id:`med-09`,name:`Workplace & Emergency First Aid Kit (65-Piece)`,unitPrice:1250,quantity:4,packaging:`1 Wall-Mountable Hard Case Box`},{id:`med-10`,name:`Isopropyl Alcohol 70% Antiseptic (1 Gallon)`,unitPrice:395,quantity:6,packaging:`1 Gallon Bottle`}],status:`Quoted`,internalNotes:`Formal PDF quote sent via email on Oct 6. Follow-up scheduled.`,createdAt:`2026-10-06T04:15:00.000Z`}],a={PRODUCTS:`medicare_products_v1`,SETTINGS:`medicare_settings_v1`,FAQS:`medicare_faqs_v1`,QUOTES:`medicare_quotes_v1`,CART:`medicare_cart_v1`,AUTH:`medicare_admin_auth_v1`};function o(e,t){try{let n=localStorage.getItem(e);return n?JSON.parse(n):t}catch(e){return console.error(`Storage read error:`,e),t}}function s(e,t){try{return localStorage.setItem(e,JSON.stringify(t)),!0}catch(e){return console.error(`Storage write error:`,e),d(`Storage quota warning: Unable to save data locally.`,`error`),!1}}function c(e){return e==null?``:String(e).replace(/&/g,`&amp;`).replace(/</g,`&lt;`).replace(/>/g,`&gt;`).replace(/"/g,`&quot;`).replace(/'/g,`&#039;`)}function l(e){return typeof e!=`number`||isNaN(e)?`Request Price`:`₱${e.toLocaleString(`en-PH`,{minimumFractionDigits:2,maximumFractionDigits:2})}`}var u={products:o(a.PRODUCTS,null)||[...t],settings:o(a.SETTINGS,null)||{...n},faqs:o(a.FAQS,null)||[...r],quotes:o(a.QUOTES,null)||[...i],cart:o(a.CART,[]),isAdminLoggedIn:o(a.AUTH,!1),currentView:`public`,activeAdminTab:`overview`,activeCategory:`All`,searchQuery:``,availabilityFilter:`All`};localStorage.getItem(a.PRODUCTS)||(s(a.PRODUCTS,u.products),s(a.SETTINGS,u.settings),s(a.FAQS,u.faqs),s(a.QUOTES,u.quotes));function d(e,t=`info`){let n=document.getElementById(`toast-container`);n||(n=document.createElement(`div`),n.id=`toast-container`,n.className=`toast-container`,document.body.appendChild(n));let r=document.createElement(`div`);r.className=`toast`,t===`error`&&(r.style.backgroundColor=`var(--danger)`),t===`success`&&(r.style.backgroundColor=`var(--teal-600)`),r.innerHTML=`<span>${c(e)}</span>`,n.appendChild(r),requestAnimationFrame(()=>r.classList.add(`show`)),setTimeout(()=>{r.classList.remove(`show`),setTimeout(()=>r.remove(),250)},3200)}function f(){s(a.PRODUCTS,u.products),renderCatalog(),renderAdminProducts(),renderAdminOverview()}function p(){s(a.SETTINGS,u.settings),_()}function m(){s(a.FAQS,u.faqs),renderFaqs(),renderAdminFaqs()}function h(){s(a.QUOTES,u.quotes),renderAdminQuotes(),renderAdminOverview()}function g(){s(a.CART,u.cart),v(),renderCartDrawer()}function _(){let{businessName:e,brandSubtitle:t,heroHeading:n,heroSubheading:r,aboutHeading:i,aboutText:a,deliveryText:o,paymentText:s,contactPhone:c,contactEmail:l,contactAddress:d,operatingHours:f,facebookUrl:p}=u.settings;document.querySelectorAll(`.brand-name-text`).forEach(t=>t.textContent=e),document.querySelectorAll(`.brand-sub-text`).forEach(e=>e.textContent=t);let m=document.getElementById(`hero-heading-text`);m&&(m.textContent=n);let h=document.getElementById(`hero-subheading-text`);h&&(h.textContent=r);let g=document.getElementById(`about-heading-text`);g&&(g.textContent=i);let _=document.getElementById(`about-body-text`);_&&(_.textContent=a);let v=document.getElementById(`delivery-info-text`);v&&(v.textContent=o);let y=document.getElementById(`payment-info-text`);y&&(y.textContent=s);let b=document.getElementById(`contact-phone-val`);b&&(b.textContent=c);let x=document.getElementById(`contact-email-val`);x&&(x.textContent=l);let S=document.getElementById(`contact-address-val`);S&&(S.textContent=d);let C=document.getElementById(`contact-hours-val`);C&&(C.textContent=f);let w=document.getElementById(`footer-fb-link`);w&&(w.href=p||`https://www.facebook.com/profile.php?id=61590781614230`)}function v(){let e=u.cart.reduce((e,t)=>e+t.quantity,0);document.querySelectorAll(`.cart-counter`).forEach(t=>{t.textContent=e,t.style.display=e>0?`flex`:`none`})}function y(e,t=1){let n=u.products.find(t=>t.id===e);if(!n)return;let r=u.cart.find(t=>t.id===e);r?r.quantity+=t:u.cart.push({id:n.id,name:n.name,price:n.price,packaging:n.packaging,image:n.image,quantity:t}),g(),d(`Added "${n.name.substring(0,24)}..." to quotation list`,`success`)}function b(e,t){let n=u.cart.find(t=>t.id===e);n&&(n.quantity+=t,n.quantity<=0&&(u.cart=u.cart.filter(t=>t.id!==e)),g())}function x(e){u.cart=u.cart.filter(t=>t.id!==e),g(),d(`Item removed from quotation list`)}function S(){let e=document.getElementById(`products-grid-container`);if(!e)return;let t=u.searchQuery.toLowerCase().trim(),n=u.activeCategory,r=u.availabilityFilter,i=u.products.filter(e=>{let i=!t||e.name.toLowerCase().includes(t)||e.brand.toLowerCase().includes(t)||e.description.toLowerCase().includes(t)||e.category.toLowerCase().includes(t),a=n===`All`||e.category===n,o=r===`All`||e.availability===r;return i&&a&&o});if(i.length===0){e.innerHTML=`
+      <div style="grid-column: 1 / -1; text-align: center; padding: 3rem 1rem; background: white; border-radius: 0.75rem; border: 1px solid var(--slate-200);">
+        <p style="font-weight: 600; color: var(--navy-900); font-size: 1.125rem; margin-bottom: 0.5rem;">No medical supplies found</p>
+        <p style="color: var(--slate-500); font-size: 0.875rem; margin-bottom: 1.25rem;">Try adjusting your search terms or category filter.</p>
+        <button id="reset-catalog-filters-btn" class="btn btn-outline btn-sm">Reset Filters</button>
+      </div>
+    `;let t=document.getElementById(`reset-catalog-filters-btn`);t&&t.addEventListener(`click`,()=>{u.searchQuery=``,u.activeCategory=`All`,u.availabilityFilter=`All`;let e=document.getElementById(`catalog-search-input`);e&&(e.value=``);let t=document.getElementById(`catalog-category-select`);t&&(t.value=`All`);let n=document.getElementById(`catalog-avail-select`);n&&(n.value=`All`),C(),S()});return}e.innerHTML=i.map(e=>{let t=`status-available`;e.availability===`Out of Stock`&&(t=`status-out-of-stock`),e.availability===`Pre-order`&&(t=`status-pre-order`);let n=typeof e.price==`number`?l(e.price):`Request Price`;return`
+      <div class="product-card" data-product-id="${e.id}">
+        <div class="product-img-box">
+          <img src="${e.image}" alt="${c(e.name)}" loading="lazy" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'400\\' height=\\'300\\'><rect width=\\'400\\' height=\\'300\\' fill=\\'%23f1f5f9\\'/><text x=\\'200\\' y=\\'150\\' font-family=\\'sans-serif\\' font-size=\\'14\\' fill=\\'%2394a3b8\\' text-anchor=\\'middle\\'>Image Not Available</text></svg>'"/>
+        </div>
+        <div class="product-body">
+          <div class="product-meta-row">
+            <span class="product-category-text">${c(e.category)}</span>
+            <span class="status-badge ${t}">● ${c(e.availability)}</span>
+          </div>
+          <h3 class="product-title" title="${c(e.name)}">${c(e.name)}</h3>
+          <div class="product-brand">${c(e.brand)}</div>
+          <p class="product-desc">${c(e.description)}</p>
+          <div class="product-footer">
+            <div class="price-row">
+              <div>
+                <div class="product-price tabular">${c(n)}</div>
+                <div class="price-demo-hint">Illustrative demo price</div>
+              </div>
+              <div class="product-unit">${c(e.packaging)}</div>
+            </div>
+            <div class="product-actions">
+              <button class="btn btn-outline btn-sm view-details-btn" data-id="${e.id}">Details</button>
+              <button class="btn btn-teal btn-sm add-quote-btn" data-id="${e.id}">+ Add to Quote</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `}).join(``),e.querySelectorAll(`.view-details-btn`).forEach(e=>{e.addEventListener(`click`,t=>{t.stopPropagation(),w(e.getAttribute(`data-id`))})}),e.querySelectorAll(`.add-quote-btn`).forEach(e=>{e.addEventListener(`click`,t=>{t.stopPropagation(),y(e.getAttribute(`data-id`),1)})}),e.querySelectorAll(`.product-card`).forEach(e=>{e.addEventListener(`click`,()=>{w(e.getAttribute(`data-product-id`))})})}function C(){document.querySelectorAll(`.category-card`).forEach(e=>{e.getAttribute(`data-category`)===u.activeCategory?e.classList.add(`active`):e.classList.remove(`active`)})}function w(e){let t=u.products.find(t=>t.id===e);if(!t)return;let n=document.getElementById(`product-details-modal`),r=document.getElementById(`product-modal-body`);if(!n||!r)return;let i=`status-available`;t.availability===`Out of Stock`&&(i=`status-out-of-stock`),t.availability===`Pre-order`&&(i=`status-pre-order`);let a=typeof t.price==`number`?l(t.price):`Request Price`;r.innerHTML=`
+    <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 1.5rem; align-items: start;">
+      <div style="background: #f8fafc; border-radius: 0.5rem; border: 1px solid var(--slate-200); overflow: hidden; padding: 0.5rem; display: flex; align-items: center; justify-content: center;">
+        <img src="${t.image}" alt="${c(t.name)}" style="width: 100%; height: auto; max-height: 280px; object-fit: contain; border-radius: 0.375rem;"/>
+      </div>
+      <div>
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+          <span style="font-size: 0.75rem; font-weight: 700; color: var(--teal-600); text-transform: uppercase;">${c(t.category)}</span>
+          <span class="status-badge ${i}">● ${c(t.availability)}</span>
+        </div>
+        <h2 style="font-size: 1.375rem; margin-bottom: 0.25rem;">${c(t.name)}</h2>
+        <div style="font-size: 0.875rem; color: var(--slate-500); margin-bottom: 1rem;">Brand: <strong style="color: var(--slate-700);">${c(t.brand)}</strong></div>
+
+        <div style="background-color: var(--slate-50); border: 1px solid var(--slate-200); border-radius: 0.5rem; padding: 0.875rem; margin-bottom: 1rem;">
+          <div style="display: flex; align-items: baseline; justify-content: space-between;">
+            <div>
+              <div style="font-size: 1.375rem; font-weight: 800; color: var(--navy-900);" class="tabular">${c(a)}</div>
+              <div style="font-size: 0.6875rem; color: var(--slate-400);">Sample illustrative pricing only</div>
+            </div>
+            <div style="font-size: 0.8125rem; color: var(--slate-600); text-align: right;">Unit / Packaging:<br><strong>${c(t.packaging)}</strong></div>
+          </div>
+        </div>
+
+        <div style="margin-bottom: 1rem;">
+          <h4 style="font-size: 0.875rem; color: var(--slate-700); margin-bottom: 0.375rem;">Description:</h4>
+          <p style="font-size: 0.8125rem; color: var(--slate-600); line-height: 1.5;">${c(t.description)}</p>
+        </div>
+
+        <div style="margin-bottom: 1.25rem;">
+          <h4 style="font-size: 0.875rem; color: var(--slate-700); margin-bottom: 0.375rem;">Technical Specifications:</h4>
+          <p style="font-size: 0.8125rem; color: var(--slate-600); background: #ffffff; border: 1px dashed var(--slate-200); padding: 0.625rem; border-radius: 0.375rem; line-height: 1.5;">${c(t.specs||`Standard medical compliance specifications available upon quotation.`)}</p>
+        </div>
+
+        <div style="display: flex; gap: 0.75rem; align-items: center; border-top: 1px solid var(--slate-200); padding-top: 1rem;">
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <label style="font-size: 0.8125rem; font-weight: 600; color: var(--slate-700);">Qty:</label>
+            <input type="number" id="modal-product-qty" value="1" min="1" max="999" style="width: 4rem; padding: 0.375rem 0.5rem; border-radius: 0.375rem; border: 1px solid var(--slate-300); font-weight: 600; text-align: center;">
+          </div>
+          <button id="modal-add-to-quote-btn" class="btn btn-teal" style="flex: 1;">+ Add to Quotation List</button>
+        </div>
+      </div>
+    </div>
+  `,document.getElementById(`modal-add-to-quote-btn`).onclick=()=>{let e=document.getElementById(`modal-product-qty`),r=parseInt(e.value,10)||1;y(t.id,r),n.classList.remove(`open`)},n.classList.add(`open`)}function T(){let e=document.getElementById(`drawer-items-list`),t=document.getElementById(`drawer-empty-state`),n=document.getElementById(`drawer-footer-actions`),r=document.getElementById(`drawer-total-count`),i=document.getElementById(`drawer-est-total`);if(!e)return;let a=u.cart.reduce((e,t)=>e+t.quantity,0),o=u.cart.reduce((e,t)=>e+(t.price||0)*t.quantity,0);if(r&&(r.textContent=a),i&&(i.textContent=l(o)),u.cart.length===0){t&&(t.style.display=`block`),e&&(e.innerHTML=``),n&&(n.style.display=`none`);return}t&&(t.style.display=`none`),n&&(n.style.display=`block`),e.innerHTML=u.cart.map(e=>`
+    <div class="quote-item-row">
+      <img src="${e.image}" alt="${c(e.name)}" class="quote-item-img"/>
+      <div class="quote-item-info">
+        <div class="quote-item-title" title="${c(e.name)}">${c(e.name)}</div>
+        <div class="quote-item-unit">${c(e.packaging||``)} · <span class="tabular">${l(e.price)}</span></div>
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 0.375rem;">
+          <div class="qty-stepper">
+            <button class="qty-btn quote-minus-btn" data-id="${e.id}">−</button>
+            <input type="text" readonly class="qty-input tabular" value="${e.quantity}">
+            <button class="qty-btn quote-plus-btn" data-id="${e.id}">+</button>
+          </div>
+          <button class="btn btn-outline btn-sm quote-remove-btn" data-id="${e.id}" style="color: var(--danger); border-color: var(--slate-200); padding: 0.2rem 0.5rem; font-size: 0.75rem;">Remove</button>
+        </div>
+      </div>
+    </div>
+  `).join(``),e.querySelectorAll(`.quote-minus-btn`).forEach(e=>{e.onclick=()=>b(e.getAttribute(`data-id`),-1)}),e.querySelectorAll(`.quote-plus-btn`).forEach(e=>{e.onclick=()=>b(e.getAttribute(`data-id`),1)}),e.querySelectorAll(`.quote-remove-btn`).forEach(e=>{e.onclick=()=>x(e.getAttribute(`data-id`))})}function E(e){if(e.preventDefault(),u.cart.length===0){d(`Please add at least one product to your quotation list.`,`error`);return}let t=document.getElementById(`quote-cust-name`).value.trim(),n=document.getElementById(`quote-cust-company`).value.trim(),r=document.getElementById(`quote-cust-email`).value.trim(),i=document.getElementById(`quote-cust-phone`).value.trim(),a=document.getElementById(`quote-cust-address`).value.trim(),o=document.getElementById(`quote-cust-notes`).value.trim();if(!t||!r||!i||!a){d(`Please complete all required fields (Name, Email, Phone, Delivery Address).`,`error`);return}let s=`QT-2026-${Math.floor(1e3+Math.random()*9e3)}`,c={id:`qt-${Date.now()}`,refNumber:s,customerName:t,companyName:n||`Individual / Household`,email:r,phone:i,deliveryAddress:a,notes:o,items:u.cart.map(e=>({id:e.id,name:e.name,unitPrice:e.price,quantity:e.quantity,packaging:e.packaging})),status:`New`,internalNotes:`Received via online quotation demo request.`,createdAt:new Date().toISOString()};u.quotes.unshift(c),h(),u.cart=[],g();let l=document.getElementById(`quote-checkout-modal`);l&&l.classList.remove(`open`);let f=document.getElementById(`quote-drawer-panel`),p=document.getElementById(`quote-drawer-overlay`);f&&f.classList.remove(`open`),p&&p.classList.remove(`open`),e.target.reset(),D(s,c)}function D(e,t){let n=document.getElementById(`quote-confirm-modal`),r=document.getElementById(`confirm-ref-number`),i=document.getElementById(`confirm-details-box`);if(n){if(r&&(r.textContent=e),i){let e=t.items.map(e=>`${c(e.name)} (x${e.quantity})`).join(`, `);i.innerHTML=`
+      <p style="margin-bottom: 0.375rem;"><strong>Customer:</strong> ${c(t.customerName)} ${t.companyName?`(${c(t.companyName)})`:``}</p>
+      <p style="margin-bottom: 0.375rem;"><strong>Email:</strong> ${c(t.email)} · <strong>Phone:</strong> ${c(t.phone)}</p>
+      <p style="margin-bottom: 0.375rem;"><strong>Destination:</strong> ${c(t.deliveryAddress)}</p>
+      <p style="margin-bottom: 0.375rem;"><strong>Requested Items:</strong> ${e}</p>
+    `}n.classList.add(`open`)}}function O(){let e=document.getElementById(`faq-accordion-container`);e&&(e.innerHTML=u.faqs.map((e,t)=>`
+    <div class="faq-item ${t===0?`open`:``}">
+      <button class="faq-question">
+        <span>${c(e.question)}</span>
+        <span class="faq-toggle-icon">${t===0?`−`:`+`}</span>
+      </button>
+      <div class="faq-answer">
+        ${c(e.answer)}
+      </div>
+    </div>
+  `).join(``),e.querySelectorAll(`.faq-question`).forEach(e=>{e.onclick=()=>{let t=e.parentElement,n=t.classList.contains(`open`);t.classList.toggle(`open`);let r=t.querySelector(`.faq-toggle-icon`);r&&(r.textContent=n?`+`:`−`)}}))}function k(){A(),j(),I(),z(),V(),document.querySelectorAll(`.admin-tab`).forEach(e=>{e.onclick=()=>{document.querySelectorAll(`.admin-tab`).forEach(e=>e.classList.remove(`active`)),document.querySelectorAll(`.admin-tab-pane`).forEach(e=>e.style.display=`none`),e.classList.add(`active`);let t=e.getAttribute(`data-tab`),n=document.getElementById(`admin-pane-${t}`);n&&(n.style.display=`block`)}})}function A(){let e=u.products.length,t=u.products.filter(e=>e.availability===`Available`).length,n=u.products.filter(e=>e.availability===`Out of Stock`).length,r=u.quotes.length,i=document.getElementById(`stat-total-prods`),a=document.getElementById(`stat-avail-prods`),o=document.getElementById(`stat-out-prods`),s=document.getElementById(`stat-total-quotes`);i&&(i.textContent=e),a&&(a.textContent=t),o&&(o.textContent=n),s&&(s.textContent=r);let d=document.getElementById(`admin-recent-quotes-tbody`);if(!d)return;let f=u.quotes.slice(0,5);if(f.length===0){d.innerHTML=`<tr><td colspan="6" style="text-align: center; color: var(--slate-400); padding: 2rem;">No quotation requests recorded yet.</td></tr>`;return}d.innerHTML=f.map(e=>{let t=e.items.reduce((e,t)=>e+t.quantity,0),n=e.items.reduce((e,t)=>e+(t.unitPrice||0)*t.quantity,0),r=new Date(e.createdAt).toLocaleDateString(`en-US`,{month:`short`,day:`numeric`,year:`numeric`});return`
+      <tr>
+        <td><strong>${c(e.refNumber)}</strong></td>
+        <td>${c(e.customerName)}<br><small style="color: var(--slate-500);">${c(e.companyName||``)}</small></td>
+        <td class="tabular">${t} items (${l(n)})</td>
+        <td>${r}</td>
+        <td><span class="status-badge" style="background: var(--slate-100); padding: 0.2rem 0.5rem; border-radius: 4px;">${c(e.status)}</span></td>
+        <td>
+          <button class="btn btn-outline btn-sm admin-view-quote-btn" data-id="${e.id}">Inspect</button>
+        </td>
+      </tr>
+    `}).join(``),d.querySelectorAll(`.admin-view-quote-btn`).forEach(e=>{e.onclick=()=>L(e.getAttribute(`data-id`))})}function j(){let e=document.getElementById(`admin-products-tbody`);e&&(e.innerHTML=u.products.map(e=>{let t=typeof e.price==`number`?l(e.price):`Request Price`;return`
+      <tr>
+        <td style="width: 50px;">
+          <img src="${e.image}" alt="" style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px; border: 1px solid var(--slate-200);"/>
+        </td>
+        <td>
+          <strong>${c(e.name)}</strong><br>
+          <small style="color: var(--slate-500);">${c(e.brand)} · ${c(e.category)}</small>
+        </td>
+        <td>${c(e.packaging)}</td>
+        <td class="tabular">${c(t)}</td>
+        <td>
+          <span style="font-size: 0.8125rem; font-weight: 600;">${c(e.availability)}</span>
+        </td>
+        <td style="text-align: right; white-space: nowrap;">
+          <button class="btn btn-outline btn-sm admin-edit-prod-btn" data-id="${e.id}" style="margin-right: 0.25rem;">Edit</button>
+          <button class="btn btn-outline btn-sm admin-delete-prod-btn" data-id="${e.id}" style="color: var(--danger); border-color: var(--slate-200);">Delete</button>
+        </td>
+      </tr>
+    `}).join(``),e.querySelectorAll(`.admin-edit-prod-btn`).forEach(e=>{e.onclick=()=>N(e.getAttribute(`data-id`))}),e.querySelectorAll(`.admin-delete-prod-btn`).forEach(e=>{e.onclick=()=>F(e.getAttribute(`data-id`))}))}function M(){let e=document.getElementById(`admin-product-modal`),t=document.getElementById(`admin-product-modal-title`),n=document.getElementById(`admin-product-form`);e&&n&&(t&&(t.textContent=`Add New Medical Product`),n.reset(),document.getElementById(`prod-form-id`).value=``,document.getElementById(`prod-form-preview-img`).src=`data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect width="100" height="100" fill="%23f1f5f9"/></svg>`,e.classList.add(`open`))}function N(e){let t=u.products.find(t=>t.id===e);if(!t)return;let n=document.getElementById(`admin-product-modal`),r=document.getElementById(`admin-product-modal-title`);n&&(r&&(r.textContent=`Edit Medical Product`),document.getElementById(`prod-form-id`).value=t.id,document.getElementById(`prod-form-name`).value=t.name,document.getElementById(`prod-form-category`).value=t.category,document.getElementById(`prod-form-brand`).value=t.brand,document.getElementById(`prod-form-packaging`).value=t.packaging,document.getElementById(`prod-form-price`).value=t.price||``,document.getElementById(`prod-form-availability`).value=t.availability,document.getElementById(`prod-form-desc`).value=t.description,document.getElementById(`prod-form-specs`).value=t.specs||``,document.getElementById(`prod-form-image-url`).value=t.image.startsWith(`data:`)?``:t.image,document.getElementById(`prod-form-preview-img`).src=t.image,n.classList.add(`open`))}function P(e){e.preventDefault();let t=document.getElementById(`prod-form-id`).value,n=document.getElementById(`prod-form-name`).value.trim(),r=document.getElementById(`prod-form-category`).value,i=document.getElementById(`prod-form-brand`).value.trim(),a=document.getElementById(`prod-form-packaging`).value.trim(),o=parseFloat(document.getElementById(`prod-form-price`).value),s=document.getElementById(`prod-form-availability`).value,c=document.getElementById(`prod-form-desc`).value.trim(),p=document.getElementById(`prod-form-specs`).value.trim(),m=document.getElementById(`prod-form-preview-img`).src;if(!n||!r||!i||!a){d(`Please fill out all mandatory product fields.`,`error`);return}let h={id:t||`med-${Date.now()}`,name:n,category:r,brand:i,packaging:a,price:isNaN(o)?null:o,priceDisplay:isNaN(o)?`Request Price`:l(o),availability:s,description:c,specs:p,image:m||`data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><rect width="400" height="300" fill="%23f1f5f9"/></svg>`};if(t){let e=u.products.findIndex(e=>e.id===t);e!==-1&&(u.products[e]=h,d(`Updated product "${n}"`,`success`))}else u.products.unshift(h),d(`Added product "${n}"`,`success`);f(),document.getElementById(`admin-product-modal`).classList.remove(`open`)}function F(e){let t=u.products.find(t=>t.id===e);t&&confirm(`Are you sure you want to delete "${t.name}" from the catalog? This will update the public website immediately.`)&&(u.products=u.products.filter(t=>t.id!==e),f(),d(`Deleted "${t.name}"`,`info`))}function I(){let e=document.getElementById(`admin-quotes-tbody`);if(e){if(u.quotes.length===0){e.innerHTML=`<tr><td colspan="7" style="text-align: center; color: var(--slate-400); padding: 3rem;">No quotation requests submitted yet.</td></tr>`;return}e.innerHTML=u.quotes.map(e=>{let t=e.items.reduce((e,t)=>e+t.quantity,0),n=e.items.reduce((e,t)=>e+(t.unitPrice||0)*t.quantity,0),r=new Date(e.createdAt).toLocaleDateString(`en-US`,{month:`short`,day:`numeric`,year:`numeric`,hour:`2-digit`,minute:`2-digit`}),i=`background: #f1f5f9; color: #475569;`;return e.status===`New`&&(i=`background: #ccfbf1; color: #0f766e; font-weight: 700;`),e.status===`Quoted`&&(i=`background: #e0f2fe; color: #0369a1;`),e.status===`Completed`&&(i=`background: #dcfce7; color: #15803d;`),e.status===`Cancelled`&&(i=`background: #fee2e2; color: #b91c1c;`),`
+      <tr>
+        <td><strong>${c(e.refNumber)}</strong></td>
+        <td>
+          <strong>${c(e.customerName)}</strong><br>
+          <small style="color: var(--slate-500);">${c(e.companyName||`Household`)}</small>
+        </td>
+        <td>
+          <small>${c(e.email)}<br>${c(e.phone)}</small>
+        </td>
+        <td class="tabular">${t} items<br><small style="color: var(--slate-500);">${l(n)}</small></td>
+        <td><small>${r}</small></td>
+        <td>
+          <span style="font-size: 0.75rem; padding: 0.2rem 0.5rem; border-radius: 4px; ${i}">${c(e.status)}</span>
+        </td>
+        <td style="text-align: right; white-space: nowrap;">
+          <button class="btn btn-outline btn-sm admin-quote-inspect-btn" data-id="${e.id}" style="margin-right: 0.25rem;">Details</button>
+          <button class="btn btn-outline btn-sm admin-quote-del-btn" data-id="${e.id}" style="color: var(--danger); border-color: var(--slate-200);">Delete</button>
+        </td>
+      </tr>
+    `}).join(``),e.querySelectorAll(`.admin-quote-inspect-btn`).forEach(e=>{e.onclick=()=>L(e.getAttribute(`data-id`))}),e.querySelectorAll(`.admin-quote-del-btn`).forEach(e=>{e.onclick=()=>R(e.getAttribute(`data-id`))})}}function L(e){let t=u.quotes.find(t=>t.id===e);if(!t)return;let n=document.getElementById(`admin-quote-detail-modal`),r=document.getElementById(`admin-quote-detail-body`);if(!n||!r)return;let i=new Date(t.createdAt).toLocaleString(`en-US`),a=t.items.map(e=>`
+    <tr>
+      <td style="padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--slate-100);">${c(e.name)}</td>
+      <td style="padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--slate-100);">${c(e.packaging||``)}</td>
+      <td style="padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--slate-100); text-align: center;" class="tabular">${e.quantity}</td>
+      <td style="padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--slate-100); text-align: right;" class="tabular">${l(e.unitPrice)}</td>
+      <td style="padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--slate-100); text-align: right; font-weight: 700;" class="tabular">${l((e.unitPrice||0)*e.quantity)}</td>
+    </tr>
+  `).join(``),o=t.items.reduce((e,t)=>e+(t.unitPrice||0)*t.quantity,0);r.innerHTML=`
+    <div style="margin-bottom: 1.25rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--slate-200); padding-bottom: 0.75rem;">
+      <div>
+        <h3 style="font-size: 1.25rem;">Reference: ${c(t.refNumber)}</h3>
+        <small style="color: var(--slate-500);">Submitted on ${i}</small>
+      </div>
+      <div>
+        <label style="font-size: 0.8125rem; font-weight: 600; margin-right: 0.5rem;">Status:</label>
+        <select id="quote-modal-status-select" class="form-select" style="width: auto; display: inline-block;">
+          <option value="New" ${t.status===`New`?`selected`:``}>New</option>
+          <option value="Contacted" ${t.status===`Contacted`?`selected`:``}>Contacted</option>
+          <option value="Quoted" ${t.status===`Quoted`?`selected`:``}>Quoted</option>
+          <option value="Completed" ${t.status===`Completed`?`selected`:``}>Completed</option>
+          <option value="Cancelled" ${t.status===`Cancelled`?`selected`:``}>Cancelled</option>
+        </select>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem; background: var(--slate-50); padding: 1rem; border-radius: 0.5rem; border: 1px solid var(--slate-200);">
+      <div>
+        <div style="font-size: 0.75rem; font-weight: 600; color: var(--slate-500); text-transform: uppercase;">Customer Information</div>
+        <div style="font-weight: 700; margin-top: 0.25rem;">${c(t.customerName)}</div>
+        <div style="font-size: 0.8125rem; color: var(--slate-600);">${c(t.companyName||`Household`)}</div>
+        <div style="font-size: 0.8125rem; color: var(--slate-600); margin-top: 0.25rem;">Email: <a href="mailto:${c(t.email)}" style="color: var(--teal-600);">${c(t.email)}</a></div>
+        <div style="font-size: 0.8125rem; color: var(--slate-600);">Phone: ${c(t.phone)}</div>
+      </div>
+      <div>
+        <div style="font-size: 0.75rem; font-weight: 600; color: var(--slate-500); text-transform: uppercase;">Delivery Address & Notes</div>
+        <div style="font-size: 0.8125rem; color: var(--slate-700); margin-top: 0.25rem;">${c(t.deliveryAddress)}</div>
+        ${t.notes?`<div style="font-size: 0.8125rem; color: var(--slate-500); margin-top: 0.5rem; font-style: italic;">Customer Note: "${c(t.notes)}"</div>`:``}
+      </div>
+    </div>
+
+    <div style="margin-bottom: 1.25rem;">
+      <h4 style="font-size: 0.875rem; margin-bottom: 0.5rem;">Requested Medical Items</h4>
+      <table style="width: 100%; border-collapse: collapse; font-size: 0.8125rem;">
+        <thead>
+          <tr style="background: var(--slate-100); text-align: left;">
+            <th style="padding: 0.5rem 0.75rem;">Item</th>
+            <th style="padding: 0.5rem 0.75rem;">Packaging</th>
+            <th style="padding: 0.5rem 0.75rem; text-align: center;">Qty</th>
+            <th style="padding: 0.5rem 0.75rem; text-align: right;">Unit Price</th>
+            <th style="padding: 0.5rem 0.75rem; text-align: right;">Estimated Subtotal</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${a}
+          <tr style="background: var(--slate-50); font-weight: 700;">
+            <td colspan="4" style="padding: 0.75rem; text-align: right;">Estimated Total:</td>
+            <td style="padding: 0.75rem; text-align: right;" class="tabular">${l(o)}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div>
+      <label class="form-label">Internal Office Notes / Pricing Log:</label>
+      <textarea id="quote-modal-internal-notes" class="form-textarea" rows="2">${c(t.internalNotes||``)}</textarea>
+    </div>
+  `,document.getElementById(`admin-save-quote-changes-btn`).onclick=()=>{let e=document.getElementById(`quote-modal-status-select`).value,r=document.getElementById(`quote-modal-internal-notes`).value.trim();t.status=e,t.internalNotes=r,h(),d(`Quotation ${t.refNumber} updated.`,`success`),n.classList.remove(`open`)},n.classList.add(`open`)}function R(e){let t=u.quotes.find(t=>t.id===e);t&&confirm(`Delete quotation request ${t.refNumber} from customer "${t.customerName}"?`)&&(u.quotes=u.quotes.filter(t=>t.id!==e),h(),d(`Deleted request ${t.refNumber}`,`info`))}function z(){document.getElementById(`admin-content-form`)&&(document.getElementById(`content-form-biz-name`).value=u.settings.businessName||``,document.getElementById(`content-form-hero-title`).value=u.settings.heroHeading||``,document.getElementById(`content-form-hero-sub`).value=u.settings.heroSubheading||``,document.getElementById(`content-form-about-head`).value=u.settings.aboutHeading||``,document.getElementById(`content-form-about-body`).value=u.settings.aboutText||``,document.getElementById(`content-form-delivery`).value=u.settings.deliveryText||``,document.getElementById(`content-form-payment`).value=u.settings.paymentText||``,document.getElementById(`content-form-phone`).value=u.settings.contactPhone||``,document.getElementById(`content-form-email`).value=u.settings.contactEmail||``,document.getElementById(`content-form-addr`).value=u.settings.contactAddress||``,document.getElementById(`content-form-hours`).value=u.settings.operatingHours||``,document.getElementById(`content-form-fb`).value=u.settings.facebookUrl||``)}function B(e){e.preventDefault(),u.settings.businessName=document.getElementById(`content-form-biz-name`).value.trim(),u.settings.heroHeading=document.getElementById(`content-form-hero-title`).value.trim(),u.settings.heroSubheading=document.getElementById(`content-form-hero-sub`).value.trim(),u.settings.aboutHeading=document.getElementById(`content-form-about-head`).value.trim(),u.settings.aboutText=document.getElementById(`content-form-about-body`).value.trim(),u.settings.deliveryText=document.getElementById(`content-form-delivery`).value.trim(),u.settings.paymentText=document.getElementById(`content-form-payment`).value.trim(),u.settings.contactPhone=document.getElementById(`content-form-phone`).value.trim(),u.settings.contactEmail=document.getElementById(`content-form-email`).value.trim(),u.settings.contactAddress=document.getElementById(`content-form-addr`).value.trim(),u.settings.operatingHours=document.getElementById(`content-form-hours`).value.trim(),u.settings.facebookUrl=document.getElementById(`content-form-fb`).value.trim(),p(),d(`Website content updated! Changes are live on the public site.`,`success`)}function V(){let e=document.getElementById(`admin-faqs-list`);e&&(e.innerHTML=u.faqs.map(e=>`
+    <div style="background: white; border: 1px solid var(--slate-200); border-radius: 0.5rem; padding: 1rem; margin-bottom: 0.75rem; display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem;">
+      <div>
+        <strong style="display: block; font-size: 0.9375rem; color: var(--navy-900); margin-bottom: 0.25rem;">${c(e.question)}</strong>
+        <p style="font-size: 0.8125rem; color: var(--slate-600); margin: 0;">${c(e.answer)}</p>
+      </div>
+      <div style="white-space: nowrap;">
+        <button class="btn btn-outline btn-sm admin-edit-faq-btn" data-id="${e.id}" style="margin-right: 0.25rem;">Edit</button>
+        <button class="btn btn-outline btn-sm admin-del-faq-btn" data-id="${e.id}" style="color: var(--danger); border-color: var(--slate-200);">Delete</button>
+      </div>
+    </div>
+  `).join(``),e.querySelectorAll(`.admin-edit-faq-btn`).forEach(e=>{e.onclick=()=>U(e.getAttribute(`data-id`))}),e.querySelectorAll(`.admin-del-faq-btn`).forEach(e=>{e.onclick=()=>G(e.getAttribute(`data-id`))}))}function H(){let e=document.getElementById(`admin-faq-modal`),t=document.getElementById(`admin-faq-modal-title`),n=document.getElementById(`admin-faq-form`);e&&n&&(t&&(t.textContent=`Add FAQ Entry`),n.reset(),document.getElementById(`faq-form-id`).value=``,e.classList.add(`open`))}function U(e){let t=u.faqs.find(t=>t.id===e);if(!t)return;let n=document.getElementById(`admin-faq-modal`),r=document.getElementById(`admin-faq-modal-title`);n&&(r&&(r.textContent=`Edit FAQ Entry`),document.getElementById(`faq-form-id`).value=t.id,document.getElementById(`faq-form-question`).value=t.question,document.getElementById(`faq-form-answer`).value=t.answer,n.classList.add(`open`))}function W(e){e.preventDefault();let t=document.getElementById(`faq-form-id`).value,n=document.getElementById(`faq-form-question`).value.trim(),r=document.getElementById(`faq-form-answer`).value.trim();if(!n||!r){d(`Please provide both question and answer text.`,`error`);return}if(t){let e=u.faqs.findIndex(e=>e.id===t);e!==-1&&(u.faqs[e]={id:t,question:n,answer:r},d(`FAQ updated.`,`success`))}else u.faqs.push({id:`faq-${Date.now()}`,question:n,answer:r}),d(`FAQ added.`,`success`);m(),document.getElementById(`admin-faq-modal`).classList.remove(`open`)}function G(e){let t=u.faqs.find(t=>t.id===e);t&&confirm(`Delete FAQ: "${t.question}"?`)&&(u.faqs=u.faqs.filter(t=>t.id!==e),m(),d(`FAQ deleted.`,`info`))}function K(){confirm(`Are you sure you want to restore the initial demo data? This will reset all products, content, FAQs, and quotation requests to their default state.`)&&(u.products=[...t],u.settings={...n},u.faqs=[...r],u.quotes=[...i],u.cart=[],f(),p(),m(),h(),z(),d(`Demo data successfully restored to factory defaults.`,`success`))}document.addEventListener(`DOMContentLoaded`,()=>{_(),S(),O(),v(),T(),document.querySelectorAll(`a[href^="#"]`).forEach(e=>{e.addEventListener(`click`,function(e){let t=this.getAttribute(`href`).substring(1),n=document.getElementById(t);if(n){e.preventDefault(),n.scrollIntoView({behavior:`smooth`});let t=document.getElementById(`mobile-nav-drawer`);t&&t.classList.remove(`open`)}})}),document.querySelectorAll(`.category-card`).forEach(e=>{e.addEventListener(`click`,()=>{let t=e.getAttribute(`data-category`);u.activeCategory=t;let n=document.getElementById(`catalog-category-select`);n&&(n.value=t),C(),S(),document.getElementById(`catalog-section`)?.scrollIntoView({behavior:`smooth`})})});let e=document.getElementById(`catalog-search-input`);e&&e.addEventListener(`input`,e=>{u.searchQuery=e.target.value,S()});let t=document.getElementById(`catalog-category-select`);t&&t.addEventListener(`change`,e=>{u.activeCategory=e.target.value,C(),S()});let n=document.getElementById(`catalog-avail-select`);n&&n.addEventListener(`change`,e=>{u.availabilityFilter=e.target.value,S()});let r=document.getElementById(`quote-drawer-panel`),i=document.getElementById(`quote-drawer-overlay`),a=document.querySelectorAll(`.open-quote-drawer-btn`),o=document.getElementById(`close-drawer-btn`);function s(){T(),r?.classList.add(`open`),i?.classList.add(`open`)}function c(){r?.classList.remove(`open`),i?.classList.remove(`open`)}a.forEach(e=>e.addEventListener(`click`,s)),o?.addEventListener(`click`,c),i?.addEventListener(`click`,c);let l=document.getElementById(`quote-checkout-modal`),d=document.getElementById(`proceed-to-quote-form-btn`),f=document.getElementById(`close-checkout-modal-btn`),p=document.getElementById(`quotation-request-form`);d?.addEventListener(`click`,()=>{c(),l?.classList.add(`open`)}),f?.addEventListener(`click`,()=>{l?.classList.remove(`open`)}),p?.addEventListener(`submit`,E);let m=document.getElementById(`quote-confirm-modal`);document.getElementById(`close-confirm-modal-btn`)?.addEventListener(`click`,()=>{m?.classList.remove(`open`)});let h=document.getElementById(`product-details-modal`);document.getElementById(`close-product-modal-btn`)?.addEventListener(`click`,()=>{h?.classList.remove(`open`)}),document.getElementById(`close-admin-prod-modal-btn`)?.addEventListener(`click`,()=>{document.getElementById(`admin-product-modal`)?.classList.remove(`open`)}),document.getElementById(`close-admin-quote-modal-btn`)?.addEventListener(`click`,()=>{document.getElementById(`admin-quote-detail-modal`)?.classList.remove(`open`)}),document.getElementById(`close-admin-faq-modal-btn`)?.addEventListener(`click`,()=>{document.getElementById(`admin-faq-modal`)?.classList.remove(`open`)}),document.getElementById(`close-login-modal-btn`)?.addEventListener(`click`,()=>{document.getElementById(`admin-login-modal`)?.classList.remove(`open`)}),window.addEventListener(`keydown`,e=>{e.key===`Escape`&&(document.querySelectorAll(`.modal-overlay.open`).forEach(e=>e.classList.remove(`open`)),c())}),document.querySelectorAll(`.modal-overlay`).forEach(e=>{e.addEventListener(`click`,t=>{t.target===e&&e.classList.remove(`open`)})});let g=document.getElementById(`public-website-view`),y=document.getElementById(`admin-dashboard-view`),b=document.getElementById(`admin-login-modal`);function x(){g.classList.add(`hidden`),y.classList.add(`active`),window.scrollTo({top:0,behavior:`smooth`}),k()}function w(){y.classList.remove(`active`),g.classList.remove(`hidden`),window.scrollTo({top:0,behavior:`smooth`})}document.querySelectorAll(`.admin-demo-trigger-btn`).forEach(e=>{e.addEventListener(`click`,e=>{e.preventDefault(),u.isAdminLoggedIn?x():b?.classList.add(`open`)})}),document.getElementById(`autofill-login-btn`)?.addEventListener(`click`,()=>{document.getElementById(`admin-email-input`).value=`admin@demo.com`,document.getElementById(`admin-pass-input`).value=`Admin123!`}),document.getElementById(`admin-login-form`)?.addEventListener(`submit`,e=>{e.preventDefault();let t=document.getElementById(`admin-email-input`).value.trim(),n=document.getElementById(`admin-pass-input`).value.trim();if(t===`admin@demo.com`&&n===`Admin123!`)u.isAdminLoggedIn=!0,localStorage.setItem(`medicare_admin_auth_v1`,JSON.stringify(!0)),b?.classList.remove(`open`),x();else{let e=document.getElementById(`login-error-msg`);e&&(e.textContent=`Invalid demo credentials. Use admin@demo.com / Admin123!`,e.style.display=`block`)}}),document.getElementById(`admin-view-site-btn`)?.addEventListener(`click`,w),document.getElementById(`admin-logout-btn`)?.addEventListener(`click`,()=>{u.isAdminLoggedIn=!1,localStorage.removeItem(`medicare_admin_auth_v1`),w()}),document.getElementById(`admin-reset-demo-btn`)?.addEventListener(`click`,K),document.getElementById(`admin-add-product-btn`)?.addEventListener(`click`,M),document.getElementById(`admin-product-form`)?.addEventListener(`submit`,P);let D=document.getElementById(`prod-form-image-file`),A=document.getElementById(`prod-form-image-url`),j=document.getElementById(`prod-form-preview-img`);A?.addEventListener(`input`,e=>{e.target.value.trim()&&(j.src=e.target.value.trim())}),D?.addEventListener(`change`,e=>{let t=e.target.files[0];if(!t)return;let n=new FileReader;n.onload=e=>{let t=new Image;t.onload=()=>{let e=document.createElement(`canvas`),n=t.width,r=t.height;n>r&&n>400?(r=Math.round(r*400/n),n=400):r>400&&(n=Math.round(n*400/r),r=400),e.width=n,e.height=r,e.getContext(`2d`).drawImage(t,0,0,n,r);let i=e.toDataURL(`image/jpeg`,.75);j.src=i,A.value=``},t.src=e.target.result},n.readAsDataURL(t)}),document.getElementById(`admin-content-form`)?.addEventListener(`submit`,B),document.getElementById(`admin-add-faq-btn`)?.addEventListener(`click`,H),document.getElementById(`admin-faq-form`)?.addEventListener(`submit`,W);let N=document.getElementById(`mobile-menu-toggle-btn`),F=document.getElementById(`mobile-nav-drawer`),I=document.getElementById(`close-mobile-menu-btn`);N?.addEventListener(`click`,()=>{F?.classList.toggle(`open`)}),I?.addEventListener(`click`,()=>{F?.classList.remove(`open`)})});
+</script>
+  </body>
+</html>

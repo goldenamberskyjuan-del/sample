@@ -1,0 +1,6 @@
+{
+  "name": "MediCare Supplies",
+  "description": "Interactive medical supplies catalog and quotation demo with client-side admin dashboard and local persistence.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
